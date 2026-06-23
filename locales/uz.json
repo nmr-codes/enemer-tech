@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "projects": "Loyihalar",
+    "blog": "Blog",
+    "about": "Men haqimda",
+    "contact": "Aloqa",
+    "admin": "Boshqaruv"
+  },
+  "hero": {
+    "title": "Veb-tizimlar kelajagini yaratish",
+    "subtitle": "Men Abdurasul Nematxonov, toza kod, startaplar va texnologiyalar haqida yozuvchi dasturiy ta'minot muhandisiman.",
+    "viewProjects": "Loyihalarni ko'rish",
+    "readBlog": "Blogni o'qish"
+  },
+  "home": {
+    "featuredProjects": "Tanlangan Loyihalar",
+    "viewAllProjects": "Barcha loyihalar",
+    "recentPosts": "Oxirgi Maqolalar",
+    "readAllPosts": "Barcha maqolalar",
+    "skills": "Ko'nikmalar va Texnologiyalar",
+    "aboutSnippetTitle": "Men haqimda qisqacha",
+    "readMoreAbout": "Batafsil o'qish",
+    "contactCTA": "Birgalikda ishlaymizmi?",
+    "contactSub": "Loyihangiz bormi yoki shunchaki suhbatlashmoqchimisiz? Menga xabar yuboring, javob beraman.",
+    "getInTouch": "Aloqaga chiqish"
+  },
+  "contact": {
+    "title": "Aloqa",
+    "subtitle": "Hamkorlik, savollar yoki shunchaki suhbat uchun bog'laning.",
+    "name": "Ism",
+    "email": "Elektron pochta",
+    "subject": "Mavzu",
+    "message": "Xabar",
+    "submit": "Xabarni yuborish",
+    "sending": "Yuborilmoqda...",
+    "success": "Rahmat! Xabaringiz muvaffaqiyatli yuborildi.",
+    "error": "Xabarni yuborib bo'lmadi. Keyinroq qayta urinib ko'ring."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Dasturlash, arxitektura va texnologiyalar haqidagi fikrlar.",
+    "search": "Maqolalarni qidirish...",
+    "noPosts": "Maqolalar topilmadi.",
+    "readTime": "daqiqa o'qish",
+    "views": "ko'rishlar"
+  },
+  "projects": {
+    "title": "Loyiha Portfolio",
+    "subtitle": "Mening loyihalarim, dasturlarim va amaliy ishlarim bilan tanishing.",
+    "status": {
+      "IN_PROGRESS": "Jarayonda",
+      "COMPLETED": "Bajarilgan",
+      "ARCHIVED": "Arxivlangan"
+    },
+    "links": {
+      "github": "Kod",
+      "live": "Jonli demo"
+    },
+    "noProjects": "Loyihalar topilmadi."
+  }
+}

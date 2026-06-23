@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "admin": "Dashboard"
+  },
+  "hero": {
+    "title": "Building the Future of Web Systems",
+    "subtitle": "I am Abdurasul Nematxonov, a Software Engineer writing about clean code, startups, and technology.",
+    "viewProjects": "View Projects",
+    "readBlog": "Read Blog"
+  },
+  "home": {
+    "featuredProjects": "Featured Projects",
+    "viewAllProjects": "View all projects",
+    "recentPosts": "Recent Posts",
+    "readAllPosts": "Read all posts",
+    "skills": "Skills & Tech Stack",
+    "aboutSnippetTitle": "A Little About Me",
+    "readMoreAbout": "Read more about me",
+    "contactCTA": "Let's work together!",
+    "contactSub": "Have a project in mind or just want to chat? Drop me a message and I'll get back to you.",
+    "getInTouch": "Get in touch"
+  },
+  "contact": {
+    "title": "Contact Me",
+    "subtitle": "Get in touch for collaborations, questions, or just a friendly chat.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send Message",
+    "sending": "Sending...",
+    "success": "Thank you! Your message has been sent successfully.",
+    "error": "Failed to send message. Please try again later."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Thoughts on programming, architecture, and technology.",
+    "search": "Search posts...",
+    "noPosts": "No blog posts found.",
+    "readTime": "min read",
+    "views": "views"
+  },
+  "projects": {
+    "title": "Portfolio",
+    "subtitle": "Explore my projects, tools, and case studies.",
+    "status": {
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed",
+      "ARCHIVED": "Archived"
+    },
+    "links": {
+      "github": "Code",
+      "live": "Live Demo"
+    },
+    "noProjects": "No projects found."
+  }
+}
