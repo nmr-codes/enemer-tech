@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { useLanguage } from "@/context/LanguageContext"
 import { Button } from "@/components/ui/button"
@@ -29,58 +29,294 @@ interface Post {
 }
 
 
-// ── 3D Orb Component ──────────────────────────────────────────
+// ── 3D Cyberpunk Head Bust Component ──────────────────────────
 function HeroOrb() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    let animationFrameId: number
+    const width = (canvas.width = 280)
+    const height = (canvas.height = 280)
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      // Clamp between limits to prevent neck snapping
+      mouseRef.current.tx = Math.max(-1.5, Math.min(1.5, (e.clientX - cx) / (rect.width / 2)))
+      mouseRef.current.ty = Math.max(-1.1, Math.min(1.1, (e.clientY - cy) / (rect.height / 2)))
+    }
+    window.addEventListener("mousemove", handleMouseMove)
+
+    // ── 3D Character Geometry Model ──────────────────────────────
+    const scaleFactor = 62
+    const baseVertices = [
+      { x: 0, y: -1.2, z: 0 },       // 0: Skull top
+      { x: 0.5, y: -0.85, z: 0.5 },   // 1: Forehead right
+      { x: -0.5, y: -0.85, z: 0.5 },  // 2: Forehead left
+      { x: 0, y: -0.7, z: 0.75 },     // 3: Forehead center
+      { x: 0, y: -0.3, z: 0.95 },     // 4: Nose bridge
+      { x: 0, y: 0.05, z: 1.1 },      // 5: Nose tip
+      { x: 0.5, y: 0.05, z: 0.8 },    // 6: Cheek right
+      { x: -0.5, y: 0.05, z: 0.8 },   // 7: Cheek left
+      { x: 0, y: 0.75, z: 0.9 },      // 8: Chin
+      { x: 0.48, y: 0.48, z: 0.45 },  // 9: Jaw right
+      { x: -0.48, y: 0.48, z: 0.45 }, // 10: Jaw left
+      { x: 0, y: -0.8, z: -0.75 },    // 11: Skull back-top
+      { x: 0.55, y: -0.2, z: -0.65 }, // 12: Skull back-right
+      { x: -0.55, y: -0.2, z: -0.65 },// 13: Skull back-left
+      { x: 0.22, y: 0.9, z: 0.1 },    // 14: Neck right
+      { x: -0.22, y: 0.9, z: 0.1 },   // 15: Neck left
+      { x: 1.1, y: 1.55, z: 0.1 },    // 16: Shoulder right
+      { x: -1.1, y: 1.55, z: 0.1 },   // 17: Shoulder left
+      { x: 0.8, y: 1.6, z: -0.55 },   // 18: Shoulder back-right
+      { x: -0.8, y: 1.6, z: -0.55 },  // 19: Shoulder back-left
+    ]
+
+    const edges = [
+      // Skull & Forehead
+      [0, 1], [0, 2], [0, 11], [0, 3],
+      [1, 3], [2, 3], [1, 12], [2, 13], [11, 12], [11, 13],
+      
+      // Face front / nose
+      [3, 4], [4, 5], [4, 6], [4, 7],
+      [5, 6], [5, 7], [5, 8],
+      
+      // Cheeks & Jaw
+      [6, 8], [7, 8], [6, 9], [7, 10],
+      [8, 9], [8, 10], [9, 12], [10, 13],
+      
+      // Neck
+      [9, 14], [10, 15], [8, 14], [8, 15],
+      [14, 15], [12, 18], [13, 19],
+      
+      // Shoulders
+      [14, 16], [15, 17],
+      [16, 17], [16, 18], [17, 19], [18, 19],
+    ]
+
+    const FOCAL_LENGTH = 380
+    const CAMERA_DIST = 260
+
+    // ── Helper 3D rotation math ─────────────────────────────────
+    const rotX = (p: { x: number; y: number; z: number }, a: number) => {
+      const c = Math.cos(a), s = Math.sin(a)
+      return { x: p.x, y: p.y * c - p.z * s, z: p.y * s + p.z * c }
+    }
+    const rotY = (p: { x: number; y: number; z: number }, a: number) => {
+      const c = Math.cos(a), s = Math.sin(a)
+      return { x: p.x * c - p.z * s, y: p.y, z: p.x * s + p.z * c }
+    }
+    const rotZ = (p: { x: number; y: number; z: number }, a: number) => {
+      const c = Math.cos(a), s = Math.sin(a)
+      return { x: p.x * c - p.y * s, y: p.x * s + p.y * c, z: p.z }
+    }
+
+    // ── 3D Tech Orbiting Tags ───────────────────────────────────
+    const codeTags = [
+      { text: "FastAPI", angle: 0, speed: 0.012, radius: 95, yOffset: -12, color: "#005fe8" },
+      { text: "Next.js", angle: Math.PI * 0.65, speed: 0.009, radius: 105, yOffset: 12, color: "#6366f1" },
+      { text: "Docker", angle: Math.PI * 1.35, speed: 0.014, radius: 90, yOffset: -38, color: "#06b6d4" },
+    ]
+
+    let time = 0
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height)
+
+      // Smooth mouse interpolation
+      const mouse = mouseRef.current
+      mouse.x += (mouse.tx - mouse.x) * 0.08
+      mouse.y += (mouse.ty - mouse.y) * 0.08
+
+      const isDark = document.documentElement.classList.contains("dark")
+
+      // Breathing / floating oscillations
+      time += 0.022
+      const breathY = Math.sin(time) * 4.5
+      const breathRoll = Math.sin(time * 0.5) * 0.025
+
+      // Head rotations: pitch (X) and yaw (Y) track the cursor
+      const headRotX = mouse.y * 0.35
+      const headRotY = mouse.x * 0.45
+
+      const projectedPoints: { x: number; y: number; z: number; valid: boolean }[] = []
+
+      // Project all vertices
+      for (let i = 0; i < baseVertices.length; i++) {
+        const v = baseVertices[i]
+        // Scale to pixel dimensions
+        let pt = { x: v.x * scaleFactor, y: v.y * scaleFactor, z: v.z * scaleFactor }
+
+        // Head vs Neck/Shoulder skeletal bending
+        // Keep shoulders more stable while head turns
+        const skeletalWeight = i < 14 ? 1.0 : 0.22
+        
+        // Apply local rotations
+        pt = rotZ(rotY(rotX(pt, headRotX * skeletalWeight), headRotY * skeletalWeight), breathRoll * skeletalWeight)
+
+        // Translate down slightly to center the character chest
+        pt.y += 28
+
+        // Perspective projection
+        const scale = FOCAL_LENGTH / (CAMERA_DIST + pt.z)
+        const sx = pt.x * scale + width / 2
+        const sy = pt.y * scale + height / 2 + breathY
+
+        projectedPoints.push({
+          x: sx,
+          y: sy,
+          z: pt.z,
+          valid: scale > 0.1 && CAMERA_DIST + pt.z > 10,
+        })
+      }
+
+      // ── Draw Cyber Visor Shield ──
+      // Visor coordinates map across Forehead Right (1), Forehead Left (2), Cheek Left (7), Cheek Right (6)
+      const p1 = projectedPoints[1]
+      const p2 = projectedPoints[2]
+      const p3 = projectedPoints[7]
+      const p4 = projectedPoints[6]
+
+      if (p1?.valid && p2?.valid && p3?.valid && p4?.valid) {
+        ctx.beginPath()
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.lineTo(p3.x, p3.y)
+        ctx.lineTo(p4.x, p4.y)
+        ctx.closePath()
+
+        const visorGrad = ctx.createLinearGradient(p2.x, p2.y, p1.x, p1.y)
+        visorGrad.addColorStop(0, "rgba(6, 182, 212, 0.28)")
+        visorGrad.addColorStop(0.5, "rgba(99, 102, 241, 0.22)")
+        visorGrad.addColorStop(1, "rgba(0, 95, 232, 0.28)")
+        
+        ctx.fillStyle = visorGrad
+        ctx.fill()
+        
+        ctx.strokeStyle = "rgba(6, 182, 212, 0.5)"
+        ctx.lineWidth = 1
+        ctx.stroke()
+
+        // Glow laser eyes inside the visor that track the cursor
+        const eyeOffsetMax = 8
+        const ex = mouse.x * eyeOffsetMax
+        const ey = mouse.y * (eyeOffsetMax * 0.6)
+
+        // Draw left eye node
+        const lx = (p2.x + p3.x) / 2 + ex
+        const ly = (p2.y + p3.y) / 2 + ey
+        ctx.beginPath()
+        ctx.arc(lx, ly, 2.5, 0, Math.PI * 2)
+        ctx.fillStyle = "#22d3ee"
+        ctx.shadowColor = "#22d3ee"
+        ctx.shadowBlur = 8
+        ctx.fill()
+        ctx.shadowBlur = 0 // Reset shadow
+
+        // Draw right eye node
+        const rx = (p1.x + p4.x) / 2 + ex
+        const ry = (p1.y + p4.y) / 2 + ey
+        ctx.beginPath()
+        ctx.arc(rx, ry, 2.5, 0, Math.PI * 2)
+        ctx.fillStyle = "#22d3ee"
+        ctx.shadowColor = "#22d3ee"
+        ctx.shadowBlur = 8
+        ctx.fill()
+        ctx.shadowBlur = 0 // Reset shadow
+      }
+
+      // ── Draw Wireframe Edges ──
+      ctx.lineWidth = 0.95
+      ctx.strokeStyle = isDark ? "rgba(0, 95, 232, 0.38)" : "rgba(0, 95, 232, 0.2)"
+      
+      for (const edge of edges) {
+        const pt1 = projectedPoints[edge[0]]
+        const pt2 = projectedPoints[edge[1]]
+        
+        if (pt1?.valid && pt2?.valid) {
+          ctx.beginPath()
+          ctx.moveTo(pt1.x, pt1.y)
+          ctx.lineTo(pt2.x, pt2.y)
+          ctx.stroke()
+        }
+      }
+
+      // ── Draw Glowing Vertex Nodes ──
+      for (let i = 0; i < projectedPoints.length; i++) {
+        const pt = projectedPoints[i]
+        if (pt?.valid) {
+          ctx.beginPath()
+          ctx.arc(pt.x, pt.y, 2, 0, Math.PI * 2)
+          
+          // Color nodes: shoulders are dimmer, face/head is glowing neon cyan/blue
+          if (i >= 14) {
+            ctx.fillStyle = isDark ? "rgba(99, 102, 241, 0.4)" : "rgba(99, 102, 241, 0.2)"
+          } else {
+            ctx.fillStyle = isDark ? "#3b82f6" : "#2563eb"
+          }
+          ctx.fill()
+        }
+      }
+
+      // ── Draw Orbiting 3D Tech Tags ──
+      for (const tag of codeTags) {
+        tag.angle += tag.speed
+        
+        // Compute 3D coordinates relative to center
+        const tx = Math.cos(tag.angle) * tag.radius
+        const tz = Math.sin(tag.angle) * tag.radius
+        const ty = tag.yOffset + 28 // Center relative to head
+
+        // Rotate tags with the global head rotation to give unified perspective
+        let tagPt = { x: tx, y: ty, z: tz }
+        tagPt = rotY(rotX(tagPt, headRotX * 0.3), headRotY * 0.3)
+
+        // Projection
+        const scale = FOCAL_LENGTH / (CAMERA_DIST + tagPt.z)
+        const sx = tagPt.x * scale + width / 2
+        const sy = tagPt.y * scale + height / 2 + breathY
+
+        // Depth opacity: fade tags when behind the character head
+        const alpha = Math.min(1.0, Math.max(0.15, (tagPt.z + 120) / 220))
+
+        ctx.font = "bold 9.5px monospace"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+        ctx.fillStyle = tag.color
+        ctx.globalAlpha = alpha
+        ctx.fillText(tag.text, sx, sy)
+      }
+      ctx.globalAlpha = 1.0
+
+      animationFrameId = requestAnimationFrame(draw)
+    }
+
+    draw()
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+      cancelAnimationFrame(animationFrameId)
+    }
+  }, [])
+
   return (
-    <div
-      className="relative w-52 h-52 mx-auto"
-      style={{ perspective: "600px", perspectiveOrigin: "center center" }}
-    >
-      {/* Outer glow halo */}
-      <div className="absolute inset-0 rounded-full bg-brand/20 blur-2xl animate-pulse" />
-
-      {/* Core sphere */}
-      <div
-        className="absolute inset-6 rounded-full animate-float"
-        style={{
-          background: "radial-gradient(circle at 35% 35%, #60a5fa, #005fe8 50%, #003fa0)",
-          boxShadow: "0 0 40px rgba(0,95,232,0.4), inset 0 -10px 30px rgba(0,0,0,0.3), inset 10px 10px 30px rgba(255,255,255,0.15)",
-        }}
-      >
-        {/* Specular highlight */}
-        <div
-          className="absolute top-3 left-4 w-8 h-5 rounded-full opacity-60"
-          style={{ background: "radial-gradient(circle, rgba(255,255,255,0.9), transparent)" }}
-        />
-        {/* Initials */}
-        <div className="absolute inset-0 flex items-center justify-center text-white font-extrabold text-3xl tracking-tight select-none">
-          AN
-        </div>
-      </div>
-
-      {/* Orbit ring 1 */}
-      <div
-        className="absolute inset-0 rounded-full border border-brand/30 animate-orbit"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand/70 shadow-[0_0_6px_2px_rgba(0,95,232,0.5)]" />
-      </div>
-
-      {/* Orbit ring 2 */}
-      <div
-        className="absolute inset-2 rounded-full border border-sky-400/20 animate-orbit2"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div className="absolute bottom-0 right-1/4 w-1.5 h-1.5 rounded-full bg-sky-400/70 shadow-[0_0_4px_2px_rgba(56,189,248,0.4)]" />
-      </div>
-
-      {/* Floating code snippets */}
-      <div className="absolute -left-12 top-8 text-[10px] font-mono text-brand/50 dark:text-brand/40 animate-float-slow select-none whitespace-nowrap">
-        async fn main() &#123;
-      </div>
-      <div className="absolute -right-14 bottom-10 text-[10px] font-mono text-sky-500/50 animate-float select-none whitespace-nowrap" style={{ animationDelay: "1.5s" }}>
-        &lt;App /&gt;
-      </div>
+    <div className="relative w-72 h-72 mx-auto flex items-center justify-center">
+      {/* Soft blue backglow behind canvas */}
+      <div className="absolute w-52 h-52 rounded-full bg-brand/12 blur-3xl pointer-events-none animate-pulse" />
+      
+      {/* 3D Canvas element */}
+      <canvas
+        ref={canvasRef}
+        className="relative z-10 w-full h-full cursor-grab active:cursor-grabbing select-none"
+        aria-label="Interactive 3D coding character bust tracking mouse movements"
+      />
     </div>
   )
 }
