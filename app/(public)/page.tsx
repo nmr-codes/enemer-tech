@@ -12,6 +12,9 @@ import { Github, Linkedin, Twitter } from "@/components/shared/SocialIcons"
 import { TiltCard } from "@/components/shared/TiltCard"
 import { ScrollReveal } from "@/components/shared/ScrollReveal"
 import { MagneticButton } from "@/components/shared/MagneticButton"
+import { CodingCharacter } from "@/components/shared/CodingCharacter"
+import { PostDefaultCover } from "@/components/shared/PostDefaultCover"
+import { ContactCTA3D } from "@/components/shared/ContactCTA3D"
 
 interface Project {
   id: string; title: string; titleUz: string | null; slug: string
@@ -241,10 +244,7 @@ export default function HomePage() {
                       {project.coverImage ? (
                         <img src={project.coverImage} alt={titleText} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                       ) : (
-                        <div className="text-neutral-400 dark:text-neutral-600 flex flex-col items-center gap-1.5">
-                          <Terminal className="h-8 w-8" />
-                          <span className="text-[10px] uppercase font-bold tracking-widest">Project Demo</span>
-                        </div>
+                        <PostDefaultCover title={project.title} size="card" />
                       )}
                       {project.status === "IN_PROGRESS" && (
                         <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
@@ -396,71 +396,38 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Animated avatar card */}
-          <TiltCard maxTilt={6} className="aspect-[4/3] rounded-2xl bg-gradient-to-tr from-brand/10 via-sky-400/5 to-brand-hover/10 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center relative overflow-hidden">
-            {/* Grid pattern */}
+          {/* 3D Coding Character */}
+          <TiltCard maxTilt={6} className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#050d1e] via-[#061428] to-[#0a1f3d] border border-blue-900/30 dark:border-blue-900/40 relative overflow-hidden shadow-2xl">
+            {/* Subtle grid */}
             <div
-              className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
+              className="absolute inset-0 opacity-[0.04]"
               style={{
                 backgroundImage: "linear-gradient(rgba(0,95,232,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,95,232,1) 1px, transparent 1px)",
                 backgroundSize: "28px 28px",
               }}
             />
-            {/* 3D sphere avatar */}
-            <div
-              className="w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-extrabold shadow-2xl animate-float"
-              style={{
-                background: "radial-gradient(circle at 35% 35%, #60a5fa, #005fe8 55%, #002f99)",
-                boxShadow: "0 8px 32px rgba(0,95,232,0.4), inset 0 -8px 20px rgba(0,0,0,0.3), inset 8px 8px 20px rgba(255,255,255,0.15)",
-              }}
-            >
-              AN
-            </div>
-            {/* Decorative code labels */}
-            <div className="absolute top-5 left-5 text-[10px] text-neutral-400 font-mono opacity-70">console.log("hello");</div>
-            <div className="absolute bottom-5 right-5 text-[10px] text-brand/60 font-mono">&lt;enemer-tech /&gt;</div>
-            <div className="absolute top-5 right-5 text-[9px] text-neutral-400 font-mono opacity-50">v2.0.0</div>
+            <CodingCharacter />
           </TiltCard>
         </section>
       </ScrollReveal>
 
       {/* ── 6. Contact CTA ────────────────────────────────────── */}
       <ScrollReveal direction="up">
-        <section className="text-center p-10 md:p-14 rounded-2xl relative overflow-hidden text-white space-y-6 shadow-2xl">
-          {/* Animated gradient background */}
-          <div
-            className="absolute inset-0 animate-gradient"
-            style={{
-              background: "linear-gradient(135deg, #003fa0, #005fe8, #0080ff, #005fe8, #003fa0)",
-              backgroundSize: "400% 400%",
-            }}
-          />
-          {/* Noise overlay */}
-          <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==')]" />
-
-          {/* Pulse rings behind button */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-24 h-24">
-            <div className="absolute inset-0 rounded-full bg-white/10 animate-pulse-ring" />
-            <div className="absolute inset-0 rounded-full bg-white/10 animate-pulse-ring" style={{ animationDelay: "0.5s" }} />
-          </div>
-
-          <div className="max-w-xl mx-auto space-y-3 relative z-10">
-            <h2 className="text-3xl font-extrabold tracking-tight">{t("home.contactCTA")}</h2>
-            <p className="text-sm opacity-90 leading-relaxed">{t("home.contactSub")}</p>
-          </div>
-          <div className="relative z-10 pt-2">
-            <MagneticButton>
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  className="bg-white hover:bg-neutral-50 text-brand font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200"
-                >
-                  {t("home.getInTouch")}
-                </Button>
-              </Link>
-            </MagneticButton>
-          </div>
-        </section>
+        <ContactCTA3D
+          title={t("home.contactCTA")}
+          subtitle={t("home.contactSub")}
+        >
+          <MagneticButton>
+            <Link href="/contact">
+              <Button
+                size="lg"
+                className="bg-white hover:bg-blue-50 text-brand font-semibold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 px-8"
+              >
+                {t("home.getInTouch")}
+              </Button>
+            </Link>
+          </MagneticButton>
+        </ContactCTA3D>
       </ScrollReveal>
 
     </div>

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import { Settings, Shield, Link2, FileText, CheckCircle, AlertCircle } from "lucide-react"
 
 export default function SettingsPage() {
@@ -30,6 +31,11 @@ export default function SettingsPage() {
   const [telegram, setTelegram] = useState("")
   const [twitter, setTwitter] = useState("")
   const [contactEmail, setContactEmail] = useState("")
+  const [skillsBackend, setSkillsBackend] = useState("")
+  const [skillsFrontend, setSkillsFrontend] = useState("")
+  const [skillsDevops, setSkillsDevops] = useState("")
+  const [experienceReversed, setExperienceReversed] = useState(false)
+  const [educationReversed, setEducationReversed] = useState(false)
 
   // Admin credentials state
   const [adminName, setAdminName] = useState("")
@@ -63,6 +69,11 @@ export default function SettingsPage() {
           setTelegram(s.social_telegram || "")
           setTwitter(s.social_twitter || "")
           setContactEmail(s.contact_email || "")
+          setSkillsBackend(s.skills_backend || "FastAPI, Django, Go, PostgreSQL, Prisma, SQLAlchemy, REST APIs")
+          setSkillsFrontend(s.skills_frontend || "Next.js, React, TypeScript, Tailwind CSS, HTML5/CSS3, shadcn/ui")
+          setSkillsDevops(s.skills_devops || "Docker, Vercel, Supabase, Git & GitHub, Railway, CI/CD Pipelines")
+          setExperienceReversed(s.experience_reversed === "true")
+          setEducationReversed(s.education_reversed === "true")
         }
       } catch (err: any) {
         setError(err.message || "An error occurred while fetching settings.")
@@ -113,6 +124,11 @@ export default function SettingsPage() {
       social_telegram: telegram,
       social_twitter: twitter,
       contact_email: contactEmail,
+      skills_backend: skillsBackend,
+      skills_frontend: skillsFrontend,
+      skills_devops: skillsDevops,
+      experience_reversed: experienceReversed.toString(),
+      education_reversed: educationReversed.toString(),
     }
 
     try {
@@ -365,6 +381,79 @@ export default function SettingsPage() {
                   placeholder="https://twitter.com/username"
                   className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Card 4: Skills Breakdown */}
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <FileText className="h-5 w-5 text-brand" /> Skills Breakdown (Comma separated)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6 pb-6 px-6 md:px-8 pt-0">
+              <div className="space-y-2">
+                <Label htmlFor="skillsBackend">Backend Development</Label>
+                <Textarea
+                  id="skillsBackend"
+                  rows={2}
+                  value={skillsBackend}
+                  onChange={(e) => setSkillsBackend(e.target.value)}
+                  placeholder="FastAPI, Django, Go, PostgreSQL..."
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand font-mono text-xs"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="skillsFrontend">Frontend & Styling</Label>
+                <Textarea
+                  id="skillsFrontend"
+                  rows={2}
+                  value={skillsFrontend}
+                  onChange={(e) => setSkillsFrontend(e.target.value)}
+                  placeholder="Next.js, React, TypeScript, Tailwind CSS..."
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand font-mono text-xs"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="skillsDevops">DevOps & Cloud</Label>
+                <Textarea
+                  id="skillsDevops"
+                  rows={2}
+                  value={skillsDevops}
+                  onChange={(e) => setSkillsDevops(e.target.value)}
+                  placeholder="Docker, Vercel, Supabase, Git & GitHub..."
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand font-mono text-xs"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Card 5: Timeline Config */}
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <Settings className="h-5 w-5 text-brand" /> Timeline Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6 pb-6 px-6 md:px-8 pt-0">
+              <div className="flex items-center justify-between rounded-lg border border-neutral-200/60 dark:border-white/[0.08] bg-white/5 dark:bg-white/[0.04] p-4">
+                <div className="space-y-0.5">
+                  <Label className="text-base font-semibold">Reverse Experience Order</Label>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Display newest experience first instead of oldest.
+                  </p>
+                </div>
+                <Switch checked={experienceReversed} onCheckedChange={setExperienceReversed} />
+              </div>
+              <div className="flex items-center justify-between rounded-lg border border-neutral-200/60 dark:border-white/[0.08] bg-white/5 dark:bg-white/[0.04] p-4">
+                <div className="space-y-0.5">
+                  <Label className="text-base font-semibold">Reverse Education Order</Label>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Display newest education first instead of oldest.
+                  </p>
+                </div>
+                <Switch checked={educationReversed} onCheckedChange={setEducationReversed} />
               </div>
             </CardContent>
           </Card>

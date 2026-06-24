@@ -52,3 +52,25 @@ export const messageSchema = z.object({
   subject: z.string().min(2, "Subject must be at least 2 characters").optional().or(z.literal("")),
   body: z.string().min(10, "Message must be at least 10 characters"),
 })
+
+export const experienceSchema = z.object({
+  year: z.string().min(1, "Year is required"),
+  title: z.string().min(2, "Title is required"),
+  titleUz: z.string().optional().nullable(),
+  organization: z.string().min(2, "Organization is required"),
+  organizationUz: z.string().optional().nullable(),
+  description: z.string().min(5, "Description is required"),
+  descriptionUz: z.string().optional().nullable(),
+  order: z.number().int().default(0),
+})
+
+export const educationSchema = z.object({
+  year: z.string().min(1, "Year is required"),
+  title: z.string().min(2, "Title is required"),
+  titleUz: z.string().optional().nullable(),
+  organization: z.string().min(2, "Organization is required"),
+  organizationUz: z.string().optional().nullable(),
+  description: z.string().min(5, "Description is required"),
+  descriptionUz: z.string().optional().nullable(),
+  order: z.number().int().default(0),
+})

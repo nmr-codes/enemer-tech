@@ -28,6 +28,7 @@ interface DashboardData {
     totalProjects: number
     unreadMessages: number
     totalViews: number
+    uniqueVisitors: number
   }
   recentMessages: Array<{
     id: string
@@ -177,7 +178,7 @@ export default function AdminDashboard() {
 
   const stats = data?.stats || {
     totalPosts: 0, publishedPosts: 0, draftPosts: 0,
-    totalProjects: 0, unreadMessages: 0, totalViews: 0,
+    totalProjects: 0, unreadMessages: 0, totalViews: 0, uniqueVisitors: 0,
   }
 
   return (
@@ -236,7 +237,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ── KPI Stats ─────────────────────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatsCard
           title="Total Posts"
           value={stats.totalPosts}
@@ -264,10 +265,18 @@ export default function AdminDashboard() {
         <StatsCard
           title="Page Views"
           value={stats.totalViews}
-          description="All-time visitor count"
+          description="All-time page loads"
           icon={Eye}
           iconColor="#10b981"
           iconBg="rgba(16,185,129,0.1)"
+        />
+        <StatsCard
+          title="Unique Visitors"
+          value={stats.uniqueVisitors}
+          description="Distinct individuals"
+          icon={Users}
+          iconColor="#ec4899"
+          iconBg="rgba(236,72,153,0.1)"
         />
       </div>
 

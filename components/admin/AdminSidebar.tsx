@@ -1,5 +1,7 @@
 "use client"
 
+import { useState, useEffect } from "react"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
@@ -15,6 +17,8 @@ import {
   ExternalLink,
   ChevronRight,
   ShieldCheck,
+  Briefcase,
+  GraduationCap
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -25,6 +29,8 @@ const navGroups = [
       { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { name: "Posts", href: "/admin/posts", icon: FileText },
       { name: "Projects", href: "/admin/projects", icon: FolderGit2 },
+      { name: "Experience", href: "/admin/experience", icon: Briefcase },
+      { name: "Education", href: "/admin/education", icon: GraduationCap },
     ],
   },
   {
@@ -55,6 +61,19 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
   const userInitials = session?.user?.name
     ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "AN"
+
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && json.data?.profile_photo) {
+          setProfilePhoto(json.data.profile_photo)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/admin/login" })
@@ -87,13 +106,17 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
       {/* ── User Avatar ─────────────────────── */}
       <div className="flex items-center gap-3 mx-3 mt-4 mb-2 px-3 py-3 rounded-xl border border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-white/[0.04]">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0"
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden"
           style={{
             background: "radial-gradient(circle at 35% 35%, #60a5fa, #005fe8 50%, #003fa0)",
             boxShadow: "0 0 16px rgba(0,95,232,0.3)",
           }}
         >
-          {userInitials}
+          {profilePhoto ? (
+            <img src={profilePhoto} alt="Admin Profile" className="w-full h-full object-cover" />
+          ) : (
+            userInitials
+          )}
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">

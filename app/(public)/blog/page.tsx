@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { Search, Calendar, Clock, Eye, ChevronLeft, ChevronRight, Terminal } from "lucide-react"
+import { Search, Calendar, Clock, Eye, ChevronLeft, ChevronRight } from "lucide-react"
 import { TiltCard } from "@/components/shared/TiltCard"
+import { PostDefaultCover } from "@/components/shared/PostDefaultCover"
 
 interface Tag {
   id: string
@@ -182,10 +183,7 @@ export default function BlogListingPage() {
                   {post.coverImage ? (
                     <img src={post.coverImage} alt={titleText} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
                   ) : (
-                    <div className="text-neutral-400 dark:text-neutral-600 flex flex-col items-center gap-1.5">
-                      <Terminal className="h-8 w-8" />
-                      <span className="text-[10px] uppercase font-bold tracking-widest">Blog Post</span>
-                    </div>
+                    <PostDefaultCover title={post.title} size="card" />
                   )}
                 </div>
 

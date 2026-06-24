@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import crypto from "crypto"
 
 export async function POST(req: Request) {
   try {
@@ -36,6 +37,10 @@ export async function POST(req: Request) {
     // Resolve country from Vercel geolocation headers
     const country = req.headers.get("x-vercel-ip-country") || "Unknown"
 
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown"
+    const rawString = `${ip}-${userAgent}`
+    const sessionId = crypto.createHash("sha256").update(rawString).digest("hex")
+
     const pageView = await prisma.pageView.create({
       data: {
         path,
@@ -43,6 +48,7 @@ export async function POST(req: Request) {
         device,
         browser,
         country,
+        sessionId,
       },
     })
 

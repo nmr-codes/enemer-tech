@@ -21,20 +21,19 @@ export function Navbar() {
   }, [])
 
   const navLinks = [
-    { name: t("nav.home"),     href: "/" },
+    { name: t("nav.home"), href: "/" },
     { name: t("nav.projects"), href: "/projects" },
-    { name: t("nav.blog"),     href: "/blog" },
-    { name: t("nav.about"),    href: "/about" },
-    { name: t("nav.contact"),  href: "/contact" },
+    { name: t("nav.blog"), href: "/blog" },
+    { name: t("nav.about"), href: "/about" },
+    { name: t("nav.contact"), href: "/contact" },
   ]
 
   return (
     <nav
-      className={`w-full sticky top-0 z-40 transition-all duration-300 ${
-        scrolled
+      className={`w-full sticky top-0 z-40 transition-all duration-300 ${scrolled
           ? "bg-white/80 dark:bg-neutral-950/80 backdrop-blur-lg shadow-[0_1px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_20px_rgba(0,0,0,0.3)] border-b border-neutral-100/60 dark:border-neutral-900/60"
           : "bg-white/50 dark:bg-neutral-950/50 backdrop-blur-md border-b border-transparent"
-      }`}
+        }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -62,7 +61,7 @@ export function Navbar() {
               <circle cx="62" cy="62" r="5.5" fill="currentColor" />
             </svg>
             <span className="font-extrabold text-lg tracking-tight text-neutral-900 dark:text-white group-hover:text-brand transition-colors duration-200">
-              enemer-tech
+              Abdurasul Nematxonov
             </span>
           </Link>
 
@@ -74,11 +73,10 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                    isActive
+                  className={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
                       ? "text-brand"
                       : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                  }`}
+                    }`}
                 >
                   {link.name}
                   {/* Active animated underline pill */}
@@ -117,11 +115,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
+                className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
                     ? "text-brand bg-brand/5 dark:bg-brand/10"
                     : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                }`}
+                  }`}
               >
                 {isActive && <span className="h-1.5 w-1.5 rounded-full bg-brand shrink-0" />}
                 {link.name}

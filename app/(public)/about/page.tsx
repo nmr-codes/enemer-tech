@@ -23,6 +23,13 @@ export default function AboutPage() {
   const [aboutContent, setAboutContent] = useState("")
   const [resumeUrl, setResumeUrl] = useState("")
   const [photoUrl, setPhotoUrl] = useState("")
+  const [backendList, setBackendList] = useState(["FastAPI", "Django", "Go", "PostgreSQL", "Prisma", "SQLAlchemy", "REST APIs"])
+  const [frontendList, setFrontendList] = useState(["Next.js", "React", "TypeScript", "Tailwind CSS", "HTML5/CSS3", "shadcn/ui"])
+  const [devopsList, setDevopsList] = useState(["Docker", "Vercel", "Supabase", "Git & GitHub", "Railway", "CI/CD Pipelines"])
+  const [experience, setExperience] = useState<TimelineItem[]>([])
+  const [education, setEducation] = useState<TimelineItem[]>([])
+  const [experienceReversed, setExperienceReversed] = useState(false)
+  const [educationReversed, setEducationReversed] = useState(false)
 
   useEffect(() => {
     async function loadAboutSettings() {
@@ -37,52 +44,55 @@ export default function AboutPage() {
             
             const content = locale === "uz" ? settings.about_content_uz : settings.about_content_en
             setAboutContent(content || "")
+
+            if (settings.skills_backend) {
+              setBackendList(settings.skills_backend.split(',').map((s: string) => s.trim()).filter(Boolean))
+            }
+            if (settings.skills_frontend) {
+              setFrontendList(settings.skills_frontend.split(',').map((s: string) => s.trim()).filter(Boolean))
+            }
+            if (settings.skills_devops) {
+              setDevopsList(settings.skills_devops.split(',').map((s: string) => s.trim()).filter(Boolean))
+            }
+            setExperienceReversed(settings.experience_reversed === "true")
+            setEducationReversed(settings.education_reversed === "true")
           }
         }
       } catch (err) {
         console.error("Failed to load about configurations:", err)
       }
     }
+
+    async function loadTimelines() {
+      try {
+        const [expRes, eduRes] = await Promise.all([
+          fetch("/api/experience"),
+          fetch("/api/education")
+        ])
+        
+        if (expRes.ok) {
+          const json = await expRes.json()
+          if (json.success) setExperience(json.data)
+        }
+        
+        if (eduRes.ok) {
+          const json = await eduRes.json()
+          if (json.success) setEducation(json.data)
+        }
+      } catch (err) {
+        console.error("Failed to load timelines:", err)
+      }
+    }
+
     loadAboutSettings()
+    loadTimelines()
   }, [locale])
 
-  const experience: TimelineItem[] = [
-    {
-      year: "2024 - Present",
-      title: "Senior Software Engineer",
-      titleUz: "Katta dasturiy ta'minot muhandisi",
-      organization: "Tech Solutions Co.",
-      organizationUz: "Tech Solutions Co.",
-      description: "Designed high-throughput FastAPI microservices and led next.js frontend migrations.",
-      descriptionUz: "Yuqori samarali FastAPI mikroxizmatlarini loyihalash va Next.js interfeyslarini boshqarish."
-    },
-    {
-      year: "2022 - 2024",
-      title: "Fullstack Developer",
-      titleUz: "Fullstack dasturchi",
-      organization: "Software Innovation Lab",
-      organizationUz: "Software Innovation Lab",
-      description: "Built scalable web interfaces using React, styled with Tailwind CSS and integrated PostgreSQL schemas.",
-      descriptionUz: "React yordamida veb interfeyslar yaratish va PostgreSQL ma'lumotlar bazasi integratsiyasi."
-    }
-  ]
-
-  const education: TimelineItem[] = [
-    {
-      year: "2018 - 2022",
-      title: "B.S. in Computer Science",
-      titleUz: "Kompyuter muhandisligi bakalavri",
-      organization: "Tashkent University of Information Technologies",
-      organizationUz: "Toshkent Axborot Texnologiyalari Universiteti",
-      description: "Focused on database structures, software architectures, and algorithmic thinking.",
-      descriptionUz: "Ma'lumotlar bazasi, dasturiy ta'minot arxitekturasi va algoritmlar."
-    }
-  ]
 
   const skillsBreakdown = [
-    { category: locale === "en" ? "Backend Development" : "Backend Dasturlash", list: ["FastAPI", "Django", "Go", "PostgreSQL", "Prisma", "SQLAlchemy", "REST APIs"] },
-    { category: locale === "en" ? "Frontend & Styling" : "Frontend va Dizayn", list: ["Next.js", "React", "TypeScript", "Tailwind CSS", "HTML5/CSS3", "shadcn/ui"] },
-    { category: locale === "en" ? "DevOps & Cloud" : "DevOps va Bulut", list: ["Docker", "Vercel", "Supabase", "Git & GitHub", "Railway", "CI/CD Pipelines"] }
+    { category: locale === "en" ? "Backend Development" : "Backend Dasturlash", list: backendList },
+    { category: locale === "en" ? "Frontend & Styling" : "Frontend va Dizayn", list: frontendList },
+    { category: locale === "en" ? "DevOps & Cloud" : "DevOps va Bulut", list: devopsList }
   ]
 
   const defaultBio = locale === "uz" 
@@ -156,7 +166,7 @@ export default function AboutPage() {
             <Briefcase className="h-6 w-6 text-brand" /> {locale === "en" ? "Experience" : "Ish tajribasi"}
           </h2>
           <div className="relative border-l border-neutral-200 dark:border-neutral-800 pl-4 ml-2 space-y-8">
-            {experience.map((item, i) => {
+            {(experienceReversed ? [...experience].reverse() : experience).map((item, i) => {
               const titleText = locale === "uz" && item.titleUz ? item.titleUz : item.title
               const orgText = locale === "uz" && item.organizationUz ? item.organizationUz : item.organization
               const descText = locale === "uz" && item.descriptionUz ? item.descriptionUz : item.description
@@ -180,7 +190,7 @@ export default function AboutPage() {
             <GraduationCap className="h-6 w-6 text-brand" /> {locale === "en" ? "Education" : "Ta'lim"}
           </h2>
           <div className="relative border-l border-neutral-200 dark:border-neutral-800 pl-4 ml-2 space-y-8">
-            {education.map((item, i) => {
+            {(educationReversed ? [...education].reverse() : education).map((item, i) => {
               const titleText = locale === "uz" && item.titleUz ? item.titleUz : item.title
               const orgText = locale === "uz" && item.organizationUz ? item.organizationUz : item.organization
               const descText = locale === "uz" && item.descriptionUz ? item.descriptionUz : item.description

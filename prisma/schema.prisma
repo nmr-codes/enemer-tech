@@ -167,9 +167,11 @@ model PageView {
   country   String?
   device    String?  // "mobile" | "desktop" | "tablet"
   browser   String?
+  sessionId String?  // Hash of IP + UserAgent for unique visitor tracking
   createdAt DateTime @default(now())
 
   @@index([path])
+  @@index([sessionId])
   @@index([createdAt])
   @@map("page_views")
 }
@@ -208,4 +210,40 @@ enum MessageStatus {
   READ
   REPLIED
   SPAM
+}
+
+// ─── Experience ───────────────────────────────────────────────
+
+model Experience {
+  id              String   @id @default(cuid())
+  year            String
+  title           String
+  titleUz         String?
+  organization    String
+  organizationUz  String?
+  description     String   @db.Text
+  descriptionUz   String?  @db.Text
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("experiences")
+}
+
+// ─── Education ────────────────────────────────────────────────
+
+model Education {
+  id              String   @id @default(cuid())
+  year            String
+  title           String
+  titleUz         String?
+  organization    String
+  organizationUz  String?
+  description     String   @db.Text
+  descriptionUz   String?  @db.Text
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("educations")
 }

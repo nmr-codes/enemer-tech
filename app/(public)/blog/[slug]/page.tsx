@@ -5,6 +5,7 @@ import { Calendar, Clock, Eye } from "lucide-react"
 import { ViewCounter } from "@/components/public/ViewCounter"
 import { ShareButtons } from "@/components/public/ShareButtons"
 import { TableOfContents } from "@/components/public/TableOfContents"
+import { PostDefaultCover } from "@/components/shared/PostDefaultCover"
 import { generateSlug } from "@/lib/utils"
 
 interface BlogPostPageProps {
@@ -116,11 +117,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </div>
 
-      {post.coverImage && (
-        <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 shadow-sm">
+      <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 shadow-sm">
+        {post.coverImage ? (
           <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
-        </div>
-      )}
+        ) : (
+          <PostDefaultCover title={post.title} size="hero" />
+        )}
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-4 items-start">
         <aside className="lg:col-span-1 lg:sticky lg:top-24 hidden lg:block border-r border-neutral-100 dark:border-neutral-900 pr-6 space-y-8">

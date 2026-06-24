@@ -9,14 +9,21 @@ export async function GET() {
 
   try {
     // 1. Gather all basic counters
-    const [totalPosts, publishedPosts, draftPosts, totalProjects, unreadMessages, totalViews] = await Promise.all([
+    const [totalPosts, publishedPosts, draftPosts, totalProjects, unreadMessages, totalViews, uniqueSessionsRes] = await Promise.all([
       prisma.post.count(),
       prisma.post.count({ where: { status: "PUBLISHED" } }),
       prisma.post.count({ where: { status: "DRAFT" } }),
       prisma.project.count(),
       prisma.message.count({ where: { status: "UNREAD" } }),
       prisma.pageView.count(),
+      prisma.pageView.findMany({
+        where: { sessionId: { not: null } },
+        distinct: ["sessionId"],
+        select: { sessionId: true },
+      }),
     ])
+
+    const uniqueVisitors = uniqueSessionsRes.length
 
     // 2. Fetch top 5 recent contact messages
     const recentMessages = await prisma.message.findMany({
@@ -133,6 +140,7 @@ export async function GET() {
           totalProjects,
           unreadMessages,
           totalViews,
+          uniqueVisitors,
         },
         recentMessages,
         topPosts,

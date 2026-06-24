@@ -43,6 +43,19 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "AN"
 
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && json.data?.profile_photo) {
+          setProfilePhoto(json.data.profile_photo)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8)
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -109,13 +122,17 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors group"
           >
             <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0"
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0 overflow-hidden"
               style={{
                 background: "radial-gradient(circle at 35% 35%, #60a5fa, #005fe8 50%, #003fa0)",
                 boxShadow: "0 0 12px rgba(0,95,232,0.3)",
               }}
             >
-              {userInitials}
+              {profilePhoto ? (
+                <img src={profilePhoto} alt="Admin Profile" className="w-full h-full object-cover" />
+              ) : (
+                userInitials
+              )}
             </div>
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 hidden md:inline-block max-w-[120px] truncate">
               {session?.user?.name || "Admin"}
