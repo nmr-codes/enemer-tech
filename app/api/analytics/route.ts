@@ -144,6 +144,6 @@ export async function GET() {
       },
     })
   } catch (err: any) {
-    return Response.json({ success: false, error: err.message }, { status: 550 })
+    return Response.json({ success: false, error: err.message }, { status: 500 })
   }
 }

@@ -447,7 +447,7 @@ export default function SettingsPage() {
                     type="email"
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
-                    placeholder="E.g. admin@abdurasul.dev"
+                    placeholder="E.g. abdurasulnematxonov@gmail.com"
                     required
                     className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
                   />

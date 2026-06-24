@@ -1,10 +1,10 @@
 import type { NextAuthConfig } from "next-auth"
 
 export const authConfig = {
-  providers: [], // empty array, will be populated with Credentials in Node.js-compatible auth.ts
+  providers: [], // populated with Credentials in Node.js-compatible auth.ts
   session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    strategy: "jwt" as const,
+    maxAge: 8 * 60 * 60, // 8 hours
   },
   pages: {
     signIn: "/admin/login",
@@ -12,28 +12,31 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role
+        token.role = (user as any).role as "ADMIN"
         token.id = user.id
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id as string;
+        session.user.role = token.role ?? "ADMIN"
+        session.user.id = token.id ?? ""
       }
       return session
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
+      const userRole = auth?.user?.role
       const isAdminRoute = nextUrl.pathname.startsWith("/admin")
       const isLoginRoute = nextUrl.pathname === "/admin/login"
 
+      // Admin routes require login + ADMIN role
       if (isAdminRoute && !isLoginRoute) {
-        return isLoggedIn
+        if (!isLoggedIn || userRole !== "ADMIN") return false
       }
-      
-      if (isLoginRoute && isLoggedIn) {
+
+      // Redirect authenticated admins away from the login page
+      if (isLoginRoute && isLoggedIn && userRole === "ADMIN") {
         return Response.redirect(new URL("/admin", nextUrl))
       }
 

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     // Forward email notification
     const resendKey = process.env.RESEND_API_KEY
-    const contactEmail = process.env.CONTACT_EMAIL || "admin@abdurasul.dev"
+    const contactEmail = process.env.CONTACT_EMAIL || "abdurasulnematxonov@gmail.com"
 
     if (resendKey && resendKey !== "re_placeholder" && resendKey !== "re_your_api_key") {
       try {
@@ -60,13 +60,21 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await auth()
   if (!session) {
     return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
   }
 
+  const { searchParams } = new URL(req.url)
+  const countOnly = searchParams.get("countOnly") === "true"
+
   try {
+    if (countOnly) {
+      const unreadCount = await prisma.message.count({ where: { status: "UNREAD" } })
+      return Response.json({ success: true, unreadCount })
+    }
+
     const messages = await prisma.message.findMany({
       orderBy: { createdAt: "desc" },
     })

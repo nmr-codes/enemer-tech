@@ -7,7 +7,7 @@ import { authConfig } from "./auth.config"
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z.string().min(6),
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -20,25 +20,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // Validate input shape
         const parsed = loginSchema.safeParse(credentials)
         if (!parsed.success) return null
 
         const { email, password } = parsed.data
 
-        const user = await prisma.user.findUnique({
-          where: { email },
-        })
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email },
+          })
 
-        if (!user || !user.password) return null
+          // Must exist, have a password, and be an ADMIN
+          if (!user || !user.password || user.role !== "ADMIN") {
+            console.warn(`[Auth] Failed login attempt for: ${email}`)
+            return null
+          }
 
-        const passwordMatch = await bcrypt.compare(password, user.password)
-        if (!passwordMatch) return null
+          const passwordMatch = await bcrypt.compare(password, user.password)
+          if (!passwordMatch) {
+            console.warn(`[Auth] Invalid password for: ${email}`)
+            return null
+          }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        } catch (err) {
+          console.error("[Auth] Database error during login:", err)
+          return null
         }
       },
     }),

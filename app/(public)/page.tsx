@@ -25,39 +25,6 @@ interface Post {
   publishedAt: string | null; views: number
 }
 
-const mockProjects: Project[] = [
-  {
-    id: "p1", title: "AI Chat Platform", titleUz: "Sun'iy intellekt chat platformasi",
-    slug: "ai-chat-platform",
-    description: "A real-time chat workspace powered by LLM models with markdown rendering.",
-    descriptionUz: "Sun'iy intellekt modellariga asoslangan real-vaqt rejimida suhbatlashish platformasi.",
-    coverImage: "", techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma"], status: "COMPLETED",
-  },
-  {
-    id: "p2", title: "E-Commerce System", titleUz: "Elektron tijorat tizimi",
-    slug: "e-commerce-system",
-    description: "High-performance shopping platform with checkout pipeline and stripe payments.",
-    descriptionUz: "Stripe integratsiyasi va to'lov tizimiga ega elektron do'kon loyihasi.",
-    coverImage: "", techStack: ["Python", "FastAPI", "PostgreSQL", "Redis"], status: "IN_PROGRESS",
-  },
-]
-
-const mockPosts: Post[] = [
-  {
-    id: "po1", title: "Why We Switched to Next.js 14 App Router",
-    titleUz: "Nega biz Next.js 14 App Router-ga o'tdik", slug: "switch-to-nextjs-14-app-router",
-    excerpt: "Exploring the gains of Server Components, static renders, and nested layouts.",
-    excerptUz: "Server componentlar, statik renderlar va nested layoutlar afzalliklari.",
-    readingTime: 6, publishedAt: new Date().toISOString(), views: 142,
-  },
-  {
-    id: "po2", title: "Building Clean REST APIs with FastAPI",
-    titleUz: "FastAPI yordamida toza REST API-lar yaratish", slug: "clean-rest-apis-fastapi",
-    excerpt: "Best architectural designs, dependency injection, and Pydantic schema validation.",
-    excerptUz: "Dependency injection va Pydantic yordamida arxitektura qoidalari.",
-    readingTime: 4, publishedAt: new Date().toISOString(), views: 98,
-  },
-]
 
 // ── 3D Orb Component ──────────────────────────────────────────
 function HeroOrb() {
@@ -136,17 +103,13 @@ export default function HomePage() {
         const postJson     = await postRes.json()
         const settingsJson = settingsRes.ok ? await settingsRes.json() : null
 
-        if (projJson.success && projJson.data.length > 0) {
+        if (projJson.success && projJson.data) {
           const featured = projJson.data.filter((p: any) => p.featured).slice(0, 3)
           setProjects(featured.length > 0 ? featured : projJson.data.slice(0, 3))
-        } else {
-          setProjects(mockProjects)
         }
 
-        if (postJson.success && postJson.data.length > 0) {
+        if (postJson.success && postJson.data) {
           setPosts(postJson.data.slice(0, 3))
-        } else {
-          setPosts(mockPosts)
         }
 
         if (settingsJson?.success && settingsJson.data) {
@@ -157,9 +120,8 @@ export default function HomePage() {
             twitter:  settingsJson.data.social_twitter  || "https://twitter.com",
           })
         }
-      } catch {
-        setProjects(mockProjects)
-        setPosts(mockPosts)
+      } catch (err) {
+        console.error("Failed to load landing data:", err)
       }
     }
     loadLandingData()
@@ -260,49 +222,58 @@ export default function HomePage() {
           </div>
         </ScrollReveal>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, i) => {
-            const titleText = locale === "uz" && project.titleUz ? project.titleUz : project.title
-            const descText  = locale === "uz" && project.descriptionUz ? project.descriptionUz : project.description
-            return (
-              <ScrollReveal key={project.id} direction="up" delay={i * 80} duration={600}>
-                <TiltCard className="flex flex-col border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-background dark:bg-neutral-900 shadow-sm h-full group">
-                  <div className="relative aspect-video bg-neutral-100 dark:bg-neutral-950 flex items-center justify-center border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
-                    {project.coverImage ? (
-                      <img src={project.coverImage} alt={titleText} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
-                    ) : (
-                      <div className="text-neutral-400 dark:text-neutral-600 flex flex-col items-center gap-1.5">
-                        <Terminal className="h-8 w-8" />
-                        <span className="text-[10px] uppercase font-bold tracking-widest">Project Demo</span>
+        {projects.length === 0 ? (
+          <div className="text-center py-12 border border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl bg-neutral-50/50 dark:bg-neutral-900/20 col-span-full">
+            <Terminal className="h-8 w-8 mx-auto text-neutral-400 mb-2" />
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {locale === "en" ? "No featured projects yet." : "Hozircha tanlangan loyihalar yo'q."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project, i) => {
+              const titleText = locale === "uz" && project.titleUz ? project.titleUz : project.title
+              const descText  = locale === "uz" && project.descriptionUz ? project.descriptionUz : project.description
+              return (
+                <ScrollReveal key={project.id} direction="up" delay={i * 80} duration={600}>
+                  <TiltCard className="flex flex-col border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-background dark:bg-neutral-900 shadow-sm h-full group">
+                    <div className="relative aspect-video bg-neutral-100 dark:bg-neutral-950 flex items-center justify-center border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
+                      {project.coverImage ? (
+                        <img src={project.coverImage} alt={titleText} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                      ) : (
+                        <div className="text-neutral-400 dark:text-neutral-600 flex flex-col items-center gap-1.5">
+                          <Terminal className="h-8 w-8" />
+                          <span className="text-[10px] uppercase font-bold tracking-widest">Project Demo</span>
+                        </div>
+                      )}
+                      {project.status === "IN_PROGRESS" && (
+                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
+                          {locale === "en" ? "In Progress" : "Jarayonda"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="font-bold text-lg text-neutral-900 dark:text-white hover:text-brand transition-colors">
+                          <Link href={`/projects/${project.slug}`}>{titleText}</Link>
+                        </h3>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-relaxed">{descText}</p>
                       </div>
-                    )}
-                    {project.status === "IN_PROGRESS" && (
-                      <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
-                        {locale === "en" ? "In Progress" : "Jarayonda"}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
-                      <h3 className="font-bold text-lg text-neutral-900 dark:text-white hover:text-brand transition-colors">
-                        <Link href={`/projects/${project.slug}`}>{titleText}</Link>
-                      </h3>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-relaxed">{descText}</p>
+                      <div className="flex flex-wrap gap-1.5 pt-2">
+                        {project.techStack.map((tech) => (
+                          <Badge key={tech} variant="outline" className="text-[10px] px-2 py-0 border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-950 font-normal">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {project.techStack.map((tech) => (
-                        <Badge key={tech} variant="outline" className="text-[10px] px-2 py-0 border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-950 font-normal">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </TiltCard>
-              </ScrollReveal>
-            )
-          })}
-        </div>
+                  </TiltCard>
+                </ScrollReveal>
+              )
+            })}
+          </div>
+        )}
       </section>
 
       {/* ── 3. Skills ─────────────────────────────────────────── */}
@@ -360,39 +331,48 @@ export default function HomePage() {
           </div>
         </ScrollReveal>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, i) => {
-            const titleText  = locale === "uz" && post.titleUz ? post.titleUz : post.title
-            const excerptText = locale === "uz" && post.excerptUz ? post.excerptUz : post.excerpt
-            return (
-              <ScrollReveal key={post.id} direction="up" delay={i * 80} duration={600}>
-                <TiltCard className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm flex flex-col justify-between space-y-4 h-full group">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-4 text-[11px] text-neutral-400">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {post.readingTime || 3} {t("blog.readTime")}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" /> {post.views}
+        {posts.length === 0 ? (
+          <div className="text-center py-12 border border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl bg-neutral-50/50 dark:bg-neutral-900/20 col-span-full">
+            <Clock className="h-8 w-8 mx-auto text-neutral-400 mb-2" />
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {locale === "en" ? "No recent posts yet." : "Hozircha yangi maqolalar yo'q."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post, i) => {
+              const titleText  = locale === "uz" && post.titleUz ? post.titleUz : post.title
+              const excerptText = locale === "uz" && post.excerptUz ? post.excerptUz : post.excerpt
+              return (
+                <ScrollReveal key={post.id} direction="up" delay={i * 80} duration={600}>
+                  <TiltCard className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm flex flex-col justify-between space-y-4 h-full group">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-4 text-[11px] text-neutral-400">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" /> {post.readingTime || 3} {t("blog.readTime")}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye className="h-3 w-3" /> {post.views}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-base text-neutral-900 dark:text-white group-hover:text-brand line-clamp-2 transition-colors">
+                        <Link href={`/blog/${post.slug}`}>{titleText}</Link>
+                      </h3>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-3 leading-relaxed">
+                        {excerptText || "No description provided."}
+                      </p>
+                    </div>
+                    <div className="pt-2 text-right">
+                      <span className="text-[10px] text-neutral-400 font-semibold uppercase">
+                        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ""}
                       </span>
                     </div>
-                    <h3 className="font-bold text-base text-neutral-900 dark:text-white group-hover:text-brand line-clamp-2 transition-colors">
-                      <Link href={`/blog/${post.slug}`}>{titleText}</Link>
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-3 leading-relaxed">
-                      {excerptText || "No description provided."}
-                    </p>
-                  </div>
-                  <div className="pt-2 text-right">
-                    <span className="text-[10px] text-neutral-400 font-semibold uppercase">
-                      {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ""}
-                    </span>
-                  </div>
-                </TiltCard>
-              </ScrollReveal>
-            )
-          })}
-        </div>
+                  </TiltCard>
+                </ScrollReveal>
+              )
+            })}
+          </div>
+        )}
       </section>
 
       {/* ── 5. About Snippet ──────────────────────────────────── */}

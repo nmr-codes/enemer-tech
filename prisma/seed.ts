@@ -4,17 +4,27 @@ import bcrypt from "bcryptjs"
 const prisma = new PrismaClient()
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@abdurasul.dev"
-  const adminPassword = process.env.ADMIN_PASSWORD || "AdminPassword123!"
+  const adminEmail = process.env.ADMIN_EMAIL || "abdurasulnematxonov@gmail.com"
+  const adminPassword = process.env.ADMIN_PASSWORD || "abdurasul2007"
 
   console.log(`Seeding admin user: ${adminEmail}`)
   const hashedPassword = await bcrypt.hash(adminPassword, 12)
 
-  // Seed Admin User
+  // Remove any existing admin users with different emails so there's only one admin
+  await prisma.user.deleteMany({
+    where: {
+      role: "ADMIN",
+      email: { not: adminEmail },
+    },
+  })
+
+  // Upsert the canonical admin user
   await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
       password: hashedPassword,
+      name: "Abdurasul Nematxonov",
+      role: "ADMIN",
     },
     create: {
       name: "Abdurasul Nematxonov",
@@ -23,6 +33,8 @@ async function main() {
       role: "ADMIN",
     },
   })
+
+  console.log(`✅ Admin user seeded: ${adminEmail}`)
 
   // Seed Default Settings
   const defaultSettings = [
@@ -52,7 +64,7 @@ async function main() {
     })
   }
 
-  console.log("Seeding completed successfully.")
+  console.log("✅ Seeding completed successfully.")
 }
 
 main()

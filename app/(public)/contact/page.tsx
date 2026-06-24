@@ -28,6 +28,7 @@ export default function ContactPage() {
     telegram: "https://t.me",
     twitter: "https://twitter.com",
   })
+  const [contactEmail, setContactEmail] = useState("abdurasulnematxonov@gmail.com")
 
   useEffect(() => {
     async function loadSocialLinks() {
@@ -42,6 +43,9 @@ export default function ContactPage() {
               telegram: json.data.social_telegram || "https://t.me",
               twitter: json.data.social_twitter || "https://twitter.com",
             })
+            if (json.data.contact_email) {
+              setContactEmail(json.data.contact_email)
+            }
           }
         }
       } catch (err) {
@@ -111,8 +115,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-neutral-400 uppercase block">Email</span>
-                  <a href="mailto:admin@abdurasul.dev" className="font-semibold hover:underline">
-                    admin@abdurasul.dev
+                  <a href={`mailto:${contactEmail}`} className="font-semibold hover:underline">
+                    {contactEmail}
                   </a>
                 </div>
               </div>

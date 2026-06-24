@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import {
   LayoutDashboard,
   FileText,
@@ -12,82 +13,195 @@ import {
   Settings,
   LogOut,
   ExternalLink,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const navigation = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Posts", href: "/admin/posts", icon: FileText },
-  { name: "Projects", href: "/admin/projects", icon: FolderGit2 },
-  { name: "Messages", href: "/admin/messages", icon: Mail },
-  { name: "Visitors", href: "/admin/visitors", icon: Users },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+const navGroups = [
+  {
+    label: "Content",
+    items: [
+      { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+      { name: "Posts", href: "/admin/posts", icon: FileText },
+      { name: "Projects", href: "/admin/projects", icon: FolderGit2 },
+    ],
+  },
+  {
+    label: "Data",
+    items: [
+      { name: "Messages", href: "/admin/messages", icon: Mail },
+      { name: "Visitors", href: "/admin/visitors", icon: Users },
+    ],
+  },
+  {
+    label: "Config",
+    items: [
+      { name: "Settings", href: "/admin/settings", icon: Settings },
+    ],
+  },
 ]
 
 interface AdminSidebarProps {
   className?: string
   onClose?: () => void
+  unreadMessages?: number
 }
 
-export function AdminSidebar({ className, onClose }: AdminSidebarProps) {
+export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSidebarProps) {
   const pathname = usePathname()
+  const { data: session } = useSession()
+
+  const userInitials = session?.user?.name
+    ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "AN"
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/admin/login" })
   }
 
   return (
-    <div className={cn("flex flex-col h-full bg-neutral-950 border-r border-neutral-800 text-white w-64", className)}>
-      <div className="flex items-center gap-2 px-6 h-16 border-b border-neutral-800">
-        <LayoutDashboard className="h-6 w-6 text-brand" />
-        <span className="font-bold text-lg tracking-tight">Admin Panel</span>
+    <div
+      className={cn(
+        "flex flex-col h-full text-white w-64 overflow-hidden",
+        className
+      )}
+      style={{
+        background: "linear-gradient(180deg, #0a0f1e 0%, #060b18 100%)",
+        borderRight: "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      {/* ── Header ──────────────────────────── */}
+      <div
+        className="flex items-center gap-3 px-5 h-16 shrink-0"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #005fe8, #0080ff)",
+            boxShadow: "0 4px 14px rgba(0,95,232,0.4)",
+          }}
+        >
+          <ShieldCheck className="h-4 w-4 text-white" />
+        </div>
+        <div className="leading-tight">
+          <span className="font-bold text-sm tracking-tight text-white">Admin Panel</span>
+          <div className="text-[10px] text-neutral-500">Secured CMS</div>
+        </div>
       </div>
 
-      <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto">
-        {navigation.map((item) => {
-          // Check if active (avoid matching settings on /admin/settings-some-other-thing etc.)
-          const isActive = item.href === "/admin" 
-            ? pathname === "/admin" 
-            : pathname.startsWith(item.href)
+      {/* ── User Avatar ─────────────────────── */}
+      <div
+        className="flex items-center gap-3 mx-3 mt-4 mb-2 px-3 py-3 rounded-xl"
+        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+      >
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0"
+          style={{
+            background: "radial-gradient(circle at 35% 35%, #60a5fa, #005fe8 50%, #003fa0)",
+            boxShadow: "0 0 16px rgba(0,95,232,0.3)",
+          }}
+        >
+          {userInitials}
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-white truncate">
+            {session?.user?.name || "Abdurasul"}
+          </p>
+          <p className="text-[10px] text-emerald-400 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+            Administrator
+          </p>
+        </div>
+      </div>
 
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={onClose}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-brand/10 text-brand border-l-2 border-brand rounded-l-none"
-                  : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
-              )}
-            >
-              <item.icon className="h-5 w-5 shrink-0" />
-              {item.name}
-            </Link>
-          )
-        })}
+      {/* ── Navigation ──────────────────────── */}
+      <nav className="flex-1 px-3 py-3 space-y-5 overflow-y-auto">
+        {navGroups.map((group) => (
+          <div key={group.label} className="space-y-0.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-600 px-4 pb-1.5">
+              {group.label}
+            </p>
+            {group.items.map((item) => {
+              const isActive =
+                item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname.startsWith(item.href)
+              const isMessages = item.name === "Messages"
 
-        <div className="h-[1px] bg-neutral-800 my-4" />
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={onClose}
+                  className={cn(
+                    "flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
+                    isActive
+                      ? "text-white"
+                      : "text-neutral-500 hover:text-neutral-200 hover:bg-white/5"
+                  )}
+                  style={
+                    isActive
+                      ? {
+                          background:
+                            "linear-gradient(90deg, rgba(0,95,232,0.18), rgba(0,95,232,0.06))",
+                          border: "1px solid rgba(0,95,232,0.25)",
+                          boxShadow: "inset 0 0 20px rgba(0,95,232,0.05)",
+                        }
+                      : {}
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon
+                      className={cn(
+                        "h-4 w-4 shrink-0 transition-colors",
+                        isActive ? "text-blue-400" : "text-neutral-600 group-hover:text-neutral-400"
+                      )}
+                    />
+                    {item.name}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {isMessages && unreadMessages > 0 && (
+                      <span className="text-[10px] font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
+                    {isActive && (
+                      <ChevronRight className="h-3 w-3 text-blue-400" />
+                    )}
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        ))}
+      </nav>
 
+      {/* ── Footer ──────────────────────────── */}
+      <div
+        className="p-3 space-y-1 shrink-0"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+      >
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-900 hover:text-white transition-colors"
+          onClick={onClose}
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:text-neutral-300 hover:bg-white/5 transition-all"
         >
-          <ExternalLink className="h-5 w-5 shrink-0" />
+          <ExternalLink className="h-4 w-4 shrink-0" />
           View Public Site
         </Link>
-      </nav>
-
-      <div className="p-4 border-t border-neutral-800">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-950/20 transition-colors"
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-red-500/70 hover:text-red-400 hover:bg-red-500/10 transition-all"
         >
-          <LogOut className="h-5 w-5 shrink-0" />
+          <LogOut className="h-4 w-4 shrink-0" />
           Sign Out
         </button>
+        <div className="px-4 pt-2 text-[10px] text-neutral-700 text-center">
+          v2.0.0 · Secured Portal
+        </div>
       </div>
     </div>
   )

@@ -7,51 +7,56 @@ const { auth } = NextAuth(authConfig)
 export default auth((req) => {
   const { pathname } = req.nextUrl
   const isLoggedIn = !!req.auth
+  const userRole = (req.auth?.user as any)?.role
   const isAdminRoute = pathname.startsWith("/admin")
   const isLoginRoute = pathname === "/admin/login"
 
-  if (isAdminRoute && !isLoginRoute && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/login", req.nextUrl))
+  // Block unauthenticated or non-ADMIN users from all /admin/** routes
+  if (isAdminRoute && !isLoginRoute) {
+    if (!isLoggedIn || userRole !== "ADMIN") {
+      const loginUrl = new URL("/admin/login", req.nextUrl)
+      loginUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
   }
 
-  if (isLoginRoute && isLoggedIn) {
+  // Redirect authenticated admins away from the login page
+  if (isLoginRoute && isLoggedIn && userRole === "ADMIN") {
     return NextResponse.redirect(new URL("/admin", req.nextUrl))
   }
 
-  // Perform visitor pageview analytics tracking for public pages
+  // Build response with security headers
+  const response = NextResponse.next()
+  response.headers.set("X-Frame-Options", "DENY")
+  response.headers.set("X-Content-Type-Options", "nosniff")
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  )
+
+  // Visitor analytics tracking for public pages (fire-and-forget)
   if (
     !pathname.startsWith("/admin") &&
     !pathname.startsWith("/api") &&
     !pathname.startsWith("/_next") &&
-    !pathname.includes(".") // ignore files/favicon
+    !pathname.includes(".")
   ) {
     const referrer = req.headers.get("referer") || ""
     const userAgent = req.headers.get("user-agent") || ""
 
-    // Fire-and-forget internal API hit
     fetch(`${req.nextUrl.origin}/api/track`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        path: pathname,
-        referrer,
-        userAgent,
-      }),
+      body: JSON.stringify({ path: pathname, referrer, userAgent }),
     }).catch(() => {})
   }
 
-  return NextResponse.next()
+  return response
 })
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes) except for /api/track if we want to run tracking inside middleware
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     "/((?!api/auth|_next/static|_next/image|favicon.ico).*)",
   ],
 }
