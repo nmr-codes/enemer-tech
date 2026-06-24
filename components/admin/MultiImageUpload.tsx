@@ -1,20 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { UploadCloud, X, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CropModal } from "./CropModal"
 
 interface MultiImageUploadProps {
   value: string[]
   onChange: (urls: string[]) => void
   maxFiles?: number
+  aspectRatio?: number
 }
 
-export function MultiImageUpload({ value = [], onChange, maxFiles = 6 }: MultiImageUploadProps) {
+export function MultiImageUpload({ value = [], onChange, maxFiles = 6, aspectRatio = 16 / 9 }: MultiImageUploadProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  // Cropping queue states
+  const [cropQueue, setCropQueue] = useState<File[]>([])
+  const [croppedFiles, setCroppedFiles] = useState<File[]>([])
+  const [currentCropUrl, setCurrentCropUrl] = useState<string | null>(null)
+
+  // Start the cropping queue
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
 
@@ -24,9 +34,49 @@ export function MultiImageUpload({ value = [], onChange, maxFiles = 6 }: MultiIm
     }
 
     setError(null)
+    const filesArray = Array.from(files)
+    setCropQueue(filesArray)
+    setCurrentCropUrl(URL.createObjectURL(filesArray[0]))
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  // Next item in crop queue or upload if done
+  const handleNextCrop = async (croppedBlob?: Blob) => {
+    // If a crop was confirmed, add it to the list
+    let updatedCropped = [...croppedFiles]
+    if (croppedBlob) {
+      const newFile = new File([croppedBlob], `cropped-${Date.now()}.jpg`, { type: "image/jpeg" })
+      updatedCropped.push(newFile)
+      setCroppedFiles(updatedCropped)
+    }
+
+    if (currentCropUrl) {
+      URL.revokeObjectURL(currentCropUrl)
+      setCurrentCropUrl(null)
+    }
+
+    // Process next item
+    const remainingQueue = cropQueue.slice(1)
+    setCropQueue(remainingQueue)
+
+    if (remainingQueue.length > 0) {
+      setCurrentCropUrl(URL.createObjectURL(remainingQueue[0]))
+    } else {
+      // Queue is empty, start upload logic if we have cropped files
+      if (updatedCropped.length > 0) {
+        uploadFiles(updatedCropped)
+      }
+      setCroppedFiles([]) // Reset state
+    }
+  }
+
+  const uploadFiles = async (filesToUpload: File[]) => {
     setLoading(true)
 
-    const uploadPromises = Array.from(files).map(async (file) => {
+    const uploadPromises = filesToUpload.map(async (file) => {
       const formData = new FormData()
       formData.append("file", file)
       formData.append("folder", "projects")
@@ -70,6 +120,21 @@ export function MultiImageUpload({ value = [], onChange, maxFiles = 6 }: MultiIm
 
   return (
     <div className="space-y-4 w-full">
+      {/* Sequential Cropping Modal */}
+      {currentCropUrl && (
+        <CropModal
+          imageSrc={currentCropUrl}
+          aspectRatio={aspectRatio}
+          onConfirm={(blob) => handleNextCrop(blob)}
+          onCancel={() => {
+            // Cancel everything if the user cancels one crop
+            if (currentCropUrl) URL.revokeObjectURL(currentCropUrl)
+            setCurrentCropUrl(null)
+            setCropQueue([])
+            setCroppedFiles([])
+          }}
+        />
+      )}
       {value.length < maxFiles && (
         <label className="flex flex-col items-center justify-center border-2 border-dashed border-neutral-300 dark:border-neutral-800 rounded-lg p-6 cursor-pointer hover:border-brand dark:hover:border-brand hover:bg-neutral-50 dark:hover:bg-neutral-950 transition-colors">
           <div className="flex flex-col items-center justify-center space-y-2 text-center">
@@ -86,11 +151,12 @@ export function MultiImageUpload({ value = [], onChange, maxFiles = 6 }: MultiIm
             </p>
           </div>
           <input
+            ref={fileInputRef}
             type="file"
             multiple
             accept="image/*"
             className="hidden"
-            onChange={handleUpload}
+            onChange={handleFileSelect}
             disabled={loading}
           />
         </label>

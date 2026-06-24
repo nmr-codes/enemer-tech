@@ -209,13 +209,13 @@ export default function SettingsPage() {
 
         <div className="grid gap-8">
           {/* Card 1: General & Meta settings */}
-          <Card className="border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm">
-            <CardHeader>
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
               <CardTitle className="text-lg font-bold flex items-center gap-2">
                 <Settings className="h-5 w-5 text-brand" /> General & SEO configuration
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pb-6 px-6 md:px-8 pt-0">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="siteTitle">Site Title</Label>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                     value={siteTitle}
                     onChange={(e) => setSiteTitle(e.target.value)}
                     placeholder="E.g. Abdurasul Nematxonov | Portfolio"
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
                 <div className="space-y-2">
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     placeholder="E.g. admin@domain.com"
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
               </div>
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                     value={siteDescEn}
                     onChange={(e) => setSiteDescEn(e.target.value)}
                     placeholder="Enter short English description..."
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand resize-none"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand resize-none"
                   />
                 </div>
                 <div className="space-y-2">
@@ -260,15 +260,15 @@ export default function SettingsPage() {
                     value={siteDescUz}
                     onChange={(e) => setSiteDescUz(e.target.value)}
                     placeholder="O'zbekcha qisqa tavsif kiriting..."
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand resize-none"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand resize-none"
                   />
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2 pt-2 border-t border-neutral-100 dark:border-neutral-850">
+              <div className="grid gap-6 md:grid-cols-2 pt-2 border-t border-neutral-100/80 dark:border-white/[0.05]">
                 <div className="space-y-2">
                   <Label>Profile Photo</Label>
-                  <ImageUpload value={profilePhoto} onChange={setProfilePhoto} folder="settings" />
+                  <ImageUpload value={profilePhoto} onChange={setProfilePhoto} folder="settings" aspectRatio={1} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="resumePdf">Resume PDF Link / URL</Label>
@@ -286,13 +286,13 @@ export default function SettingsPage() {
           </Card>
 
           {/* Card 2: Biography details */}
-          <Card className="border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm">
-            <CardHeader>
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
               <CardTitle className="text-lg font-bold flex items-center gap-2">
                 <FileText className="h-5 w-5 text-brand" /> Biography (HTML/Rich-Text)
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pb-6 px-6 md:px-8 pt-0">
               <div className="space-y-2">
                 <Label htmlFor="aboutEn">About Biography (English)</Label>
                 <Textarea
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                   value={aboutEn}
                   onChange={(e) => setAboutEn(e.target.value)}
                   placeholder="<h2>Who I Am</h2><p>...</p>"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand font-mono text-xs"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand font-mono text-xs"
                 />
               </div>
               <div className="space-y-2">
@@ -312,20 +312,20 @@ export default function SettingsPage() {
                   value={aboutUz}
                   onChange={(e) => setAboutUz(e.target.value)}
                   placeholder="<h2>Men haqimda</h2><p>...</p>"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand font-mono text-xs"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand font-mono text-xs"
                 />
               </div>
             </CardContent>
           </Card>
 
           {/* Card 3: Social handle links */}
-          <Card className="border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm">
-            <CardHeader>
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
               <CardTitle className="text-lg font-bold flex items-center gap-2">
                 <Link2 className="h-5 w-5 text-brand" /> Social media handles
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
+            <CardContent className="grid gap-4 md:grid-cols-2 pb-6 px-6 md:px-8 pt-0">
               <div className="space-y-2">
                 <Label htmlFor="github">GitHub Profile URL</Label>
                 <Input
@@ -333,7 +333,7 @@ export default function SettingsPage() {
                   value={github}
                   onChange={(e) => setGithub(e.target.value)}
                   placeholder="https://github.com/username"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                 />
               </div>
               <div className="space-y-2">
@@ -343,7 +343,7 @@ export default function SettingsPage() {
                   value={linkedin}
                   onChange={(e) => setLinkedin(e.target.value)}
                   placeholder="https://linkedin.com/in/username"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                 />
               </div>
               <div className="space-y-2">
@@ -353,7 +353,7 @@ export default function SettingsPage() {
                   value={telegram}
                   onChange={(e) => setTelegram(e.target.value)}
                   placeholder="https://t.me/username"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                 />
               </div>
               <div className="space-y-2">
@@ -363,7 +363,7 @@ export default function SettingsPage() {
                   value={twitter}
                   onChange={(e) => setTwitter(e.target.value)}
                   placeholder="https://twitter.com/username"
-                  className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                  className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                 />
               </div>
             </CardContent>
@@ -387,7 +387,7 @@ export default function SettingsPage() {
             variant="outline"
             disabled={loading}
             onClick={() => router.push("/admin")}
-            className="border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300"
+            className="border-neutral-200/60 dark:border-white/[0.08] text-neutral-700 dark:text-neutral-300"
           >
             Cancel
           </Button>
@@ -395,7 +395,7 @@ export default function SettingsPage() {
       </form>
 
       {/* Profile/Credentials Security Form */}
-      <div className="pt-8 border-t border-neutral-200 dark:border-neutral-800">
+      <div className="pt-8 border-t border-neutral-200/60 dark:border-white/[0.07]">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Account Credentials & Security</h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
@@ -421,13 +421,13 @@ export default function SettingsPage() {
             </div>
           )}
 
-          <Card className="border-neutral-200 dark:border-neutral-800 bg-background dark:bg-neutral-900 shadow-sm">
-            <CardHeader>
+          <Card className="border-neutral-200/50 dark:border-white/[0.07] bg-white dark:bg-neutral-900/80 shadow-sm">
+            <CardHeader className="pt-6 pb-4 px-6 md:px-8">
               <CardTitle className="text-lg font-bold flex items-center gap-2">
                 <Shield className="h-5 w-5 text-brand" /> Admin profile details & password
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pb-6 px-6 md:px-8 pt-0">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="adminName">Administrator Name</Label>
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                     onChange={(e) => setAdminName(e.target.value)}
                     placeholder="E.g. Abdurasul Nematxonov"
                     required
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
                 <div className="space-y-2">
@@ -449,12 +449,12 @@ export default function SettingsPage() {
                     onChange={(e) => setAdminEmail(e.target.value)}
                     placeholder="E.g. abdurasulnematxonov@gmail.com"
                     required
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 pt-4 border-t border-neutral-100 dark:border-neutral-800">
+              <div className="grid gap-4 md:grid-cols-2 pt-4 border-t border-neutral-100/80 dark:border-white/[0.05]">
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password (Optional)</Label>
                   <Input
@@ -463,7 +463,7 @@ export default function SettingsPage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Minimum 8 characters"
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
                 <div className="space-y-2">
@@ -474,12 +474,12 @@ export default function SettingsPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repeat new password"
-                    className="bg-background dark:bg-neutral-950 border-neutral-200 dark:border-neutral-800 focus-visible:ring-brand"
+                    className="bg-white/5 dark:bg-white/[0.04] border-neutral-200/60 dark:border-white/[0.08] focus-visible:ring-brand"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-neutral-100 dark:border-neutral-800 max-w-md">
+              <div className="space-y-2 pt-4 border-t border-neutral-100/80 dark:border-white/[0.05] max-w-md">
                 <Label htmlFor="currentPassword" className="text-brand font-medium">Current Password (Required to authorize changes)</Label>
                 <Input
                   id="currentPassword"

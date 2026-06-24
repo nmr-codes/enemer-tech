@@ -1,25 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { UploadCloud, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CropModal } from "./CropModal"
 
 interface ImageUploadProps {
   value: string
   onChange: (url: string) => void
   folder?: string
+  aspectRatio?: number
 }
 
-export function ImageUpload({ value, onChange, folder = "portfolio" }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, folder = "portfolio", aspectRatio = 16 / 9 }: ImageUploadProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  
+  // Crop states
+  const [selectedImageStr, setSelectedImageStr] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Create a temporary object URL to feed to the cropper
+    const objectUrl = URL.createObjectURL(file)
+    setSelectedImageStr(objectUrl)
+    
+    // Reset file input so same file can be selected again if canceled
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  const handleUploadCropped = async (croppedBlob: Blob) => {
+    setSelectedImageStr(null) // close modal
     setError(null)
     setLoading(true)
+
+    // Append standard generic filename (Supabase will likely give it a unique UUID or we can construct one)
+    const file = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" })
 
     const formData = new FormData()
     formData.append("file", file)
@@ -66,6 +87,18 @@ export function ImageUpload({ value, onChange, folder = "portfolio" }: ImageUplo
 
   return (
     <div className="space-y-4 w-full">
+      {/* Crop Modal */}
+      {selectedImageStr && (
+        <CropModal
+          imageSrc={selectedImageStr}
+          aspectRatio={aspectRatio}
+          onConfirm={handleUploadCropped}
+          onCancel={() => {
+            URL.revokeObjectURL(selectedImageStr)
+            setSelectedImageStr(null)
+          }}
+        />
+      )}
       {value ? (
         <div className="relative aspect-video max-w-sm rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 group">
           <img src={value} alt="Uploaded preview" className="w-full h-full object-cover" />
@@ -92,10 +125,11 @@ export function ImageUpload({ value, onChange, folder = "portfolio" }: ImageUplo
             <p className="text-xs text-neutral-400">PNG, JPG, WEBP, GIF up to 5MB</p>
           </div>
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleUpload}
+            onChange={handleFileSelect}
             disabled={loading}
           />
         </label>

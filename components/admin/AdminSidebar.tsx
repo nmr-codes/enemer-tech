@@ -63,19 +63,12 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
   return (
     <div
       className={cn(
-        "flex flex-col h-full text-white w-64 overflow-hidden",
+        "flex flex-col h-full w-64 overflow-hidden border-r border-neutral-200 dark:border-white/[0.06] bg-white dark:bg-[#060b18] text-neutral-900 dark:text-white",
         className
       )}
-      style={{
-        background: "linear-gradient(180deg, #0a0f1e 0%, #060b18 100%)",
-        borderRight: "1px solid rgba(255,255,255,0.06)",
-      }}
     >
       {/* ── Header ──────────────────────────── */}
-      <div
-        className="flex items-center gap-3 px-5 h-16 shrink-0"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-      >
+      <div className="flex items-center gap-3 px-5 h-16 shrink-0 border-b border-neutral-200 dark:border-white/[0.06]">
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
           style={{
@@ -86,16 +79,13 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
           <ShieldCheck className="h-4 w-4 text-white" />
         </div>
         <div className="leading-tight">
-          <span className="font-bold text-sm tracking-tight text-white">Admin Panel</span>
-          <div className="text-[10px] text-neutral-500">Secured CMS</div>
+          <span className="font-bold text-sm tracking-tight text-neutral-900 dark:text-white">Admin Panel</span>
+          <div className="text-[10px] text-neutral-500 dark:text-neutral-400">Secured CMS</div>
         </div>
       </div>
 
       {/* ── User Avatar ─────────────────────── */}
-      <div
-        className="flex items-center gap-3 mx-3 mt-4 mb-2 px-3 py-3 rounded-xl"
-        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
-      >
+      <div className="flex items-center gap-3 mx-3 mt-4 mb-2 px-3 py-3 rounded-xl border border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-white/[0.04]">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0"
           style={{
@@ -106,7 +96,7 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
           {userInitials}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-white truncate">
+          <p className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
             {session?.user?.name || "Abdurasul"}
           </p>
           <p className="text-[10px] text-emerald-400 flex items-center gap-1">
@@ -138,19 +128,10 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
                   className={cn(
                     "flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
                     isActive
-                      ? "text-white"
-                      : "text-neutral-500 hover:text-neutral-200 hover:bg-white/5"
+                      ? "text-brand bg-brand-light/50 dark:bg-brand/10 border border-brand/20 dark:border-brand/30 shadow-[inset_0_0_20px_rgba(0,95,232,0.03)] dark:shadow-[inset_0_0_20px_rgba(0,95,232,0.05)]"
+                      : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-white/5"
                   )}
-                  style={
-                    isActive
-                      ? {
-                          background:
-                            "linear-gradient(90deg, rgba(0,95,232,0.18), rgba(0,95,232,0.06))",
-                          border: "1px solid rgba(0,95,232,0.25)",
-                          boxShadow: "inset 0 0 20px rgba(0,95,232,0.05)",
-                        }
-                      : {}
-                  }
+
                 >
                   <div className="flex items-center gap-3">
                     <item.icon
@@ -179,15 +160,12 @@ export function AdminSidebar({ className, onClose, unreadMessages = 0 }: AdminSi
       </nav>
 
       {/* ── Footer ──────────────────────────── */}
-      <div
-        className="p-3 space-y-1 shrink-0"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-      >
+      <div className="p-3 space-y-1 shrink-0 border-t border-neutral-200 dark:border-white/[0.06]">
         <Link
           href="/"
           target="_blank"
           onClick={onClose}
-          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:text-neutral-300 hover:bg-white/5 transition-all"
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-white/5 transition-all"
         >
           <ExternalLink className="h-4 w-4 shrink-0" />
           View Public Site

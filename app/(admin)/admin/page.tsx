@@ -185,22 +185,17 @@ export default function AdminDashboard() {
 
       {/* ── Welcome Banner ────────────────────────────────────── */}
       <div
-        className="relative rounded-2xl p-6 md:p-8 overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%)",
-          border: "1px solid rgba(0,95,232,0.2)",
-          boxShadow: "0 4px 32px rgba(0,95,232,0.08)",
-        }}
+        className="relative rounded-2xl p-6 md:p-8 overflow-hidden bg-white dark:bg-[#0a1628] border border-neutral-200 dark:border-white/[0.08] shadow-sm dark:shadow-[0_4px_32px_rgba(0,95,232,0.08)]"
       >
         {/* Glows */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-600/15 blur-[60px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-40 h-40 rounded-full bg-sky-400/10 blur-[50px] pointer-events-none" />
         {/* Grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+              "linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}
         />
@@ -212,10 +207,10 @@ export default function AdminDashboard() {
                 {getGreeting()}
               </span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
               Welcome back, {firstName} 👋
             </h2>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               Here's what's happening on your website today.
             </p>
           </div>
@@ -232,7 +227,7 @@ export default function AdminDashboard() {
               </button>
             </Link>
             <Link href="/admin/projects/new">
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 bg-white/8 border border-white/10 hover:bg-white/12 transition-all hover:scale-[1.02]">
+              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-white/8 border border-neutral-200 dark:border-white/10 hover:bg-neutral-200 dark:hover:bg-white/12 transition-all hover:scale-[1.02]">
                 <Plus className="h-4 w-4" /> New Project
               </button>
             </Link>

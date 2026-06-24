@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Menu, Bell, LogOut, ExternalLink, ChevronDown, User } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher"
 
 const routeLabels: Record<string, string> = {
   "/admin": "Dashboard",
@@ -87,6 +88,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
       {/* Right: actions */}
       <div className="flex items-center gap-2">
+        <LanguageSwitcher />
         <ThemeToggle />
 
         {/* Notification bell (decorative for now) */}
