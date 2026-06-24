@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth"
 
 export const authConfig = {
   providers: [], // populated with Credentials in Node.js-compatible auth.ts
+  trustHost: true, // required for Vercel / reverse-proxy deployments
   session: {
     strategy: "jwt" as const,
     maxAge: 8 * 60 * 60, // 8 hours
@@ -26,18 +27,22 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
-      const userRole = auth?.user?.role
+      const userRole = (auth?.user as any)?.role
       const isAdminRoute = nextUrl.pathname.startsWith("/admin")
       const isLoginRoute = nextUrl.pathname === "/admin/login"
-
-      // Admin routes require login + ADMIN role
-      if (isAdminRoute && !isLoginRoute) {
-        if (!isLoggedIn || userRole !== "ADMIN") return false
-      }
 
       // Redirect authenticated admins away from the login page
       if (isLoginRoute && isLoggedIn && userRole === "ADMIN") {
         return Response.redirect(new URL("/admin", nextUrl))
+      }
+
+      // Block unauthenticated or non-ADMIN users from all /admin/** routes
+      if (isAdminRoute && !isLoginRoute) {
+        if (!isLoggedIn || userRole !== "ADMIN") {
+          const loginUrl = new URL("/admin/login", nextUrl)
+          loginUrl.searchParams.set("callbackUrl", nextUrl.pathname)
+          return Response.redirect(loginUrl)
+        }
       }
 
       return true
