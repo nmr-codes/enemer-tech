@@ -83,6 +83,7 @@ export function TiltCard({
       className={`relative overflow-hidden will-change-transform ${className}`}
       {...props}
     >
+      {children}
       {/* Glare spot — follows cursor */}
       <div
         className="pointer-events-none absolute w-[350px] h-[350px] rounded-full -translate-x-1/2 -translate-y-1/2 z-20 mix-blend-overlay"
@@ -96,7 +97,6 @@ export function TiltCard({
         className="pointer-events-none absolute inset-0 z-20"
         style={shineStyle}
       />
-      <div className="relative z-10 h-full w-full">{children}</div>
     </div>
   )
 }

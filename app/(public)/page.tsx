@@ -416,6 +416,7 @@ export default function HomePage() {
         <ContactCTA3D
           title={t("home.contactCTA")}
           subtitle={t("home.contactSub")}
+          locale={locale}
         >
           <MagneticButton>
             <Link href="/contact">

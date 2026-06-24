@@ -5,10 +5,12 @@ import { useEffect, useRef } from "react"
 export function ContactCTA3D({
   title,
   subtitle,
+  locale = "en",
   children,
 }: {
   title: string
   subtitle: string
+  locale?: string
   children?: React.ReactNode
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -201,7 +203,7 @@ export function ContactCTA3D({
         {/* Badge */}
         <div className="inline-flex w-fit items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-blue-200 tracking-wider uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-          Available for work
+          {locale === "uz" ? "Ishga tayyor" : "Available for work"}
         </div>
 
         <div className="space-y-3 max-w-lg">
@@ -216,9 +218,9 @@ export function ContactCTA3D({
         {/* Stats row */}
         <div className="flex flex-wrap gap-6 pt-1">
           {[
-            { value: "3+", label: "Years exp." },
-            { value: "20+", label: "Projects" },
-            { value: "100%", label: "Dedicated" },
+            { value: "3+", label: locale === "uz" ? "Yillik tajriba" : "Years exp." },
+            { value: "20+", label: locale === "uz" ? "Loyihalar" : "Projects" },
+            { value: "100%", label: locale === "uz" ? "Sadoqatli" : "Dedicated" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl font-extrabold text-white">{stat.value}</div>
