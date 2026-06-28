@@ -43,18 +43,8 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "AN"
 
-  const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success && json.data?.profile_photo) {
-          setProfilePhoto(json.data.profile_photo)
-        }
-      })
-      .catch(() => {})
-  }, [])
+  const userPhoto = session?.user?.image
+  const userRole = (session?.user as any)?.role || "ADMIN"
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8)
@@ -128,15 +118,20 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 boxShadow: "0 0 12px rgba(0,95,232,0.3)",
               }}
             >
-              {profilePhoto ? (
-                <img src={profilePhoto} alt="Admin Profile" className="w-full h-full object-cover" />
+              {userPhoto ? (
+                <img src={userPhoto} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 userInitials
               )}
             </div>
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 hidden md:inline-block max-w-[120px] truncate">
-              {session?.user?.name || "Admin"}
-            </span>
+            <div className="flex flex-col items-start hidden md:flex">
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 max-w-[120px] truncate leading-tight">
+                {session?.user?.name || "User"}
+              </span>
+              <span className="text-[10px] font-bold text-brand uppercase tracking-wider leading-tight">
+                {userRole}
+              </span>
+            </div>
             <ChevronDown className={`h-3.5 w-3.5 text-neutral-400 transition-transform hidden md:block ${dropdownOpen ? "rotate-180" : ""}`} />
           </button>
 

@@ -6,24 +6,35 @@ import { revalidatePath } from "next/cache"
 
 async function checkAdmin() {
   const session = await auth()
-  if (!session?.user || (session.user as any).role !== "ADMIN") {
+  const role = (session?.user as any)?.role
+  if (!session?.user || (role !== "ADMIN" && role !== "OWNER")) {
     throw new Error("Unauthorized")
   }
 }
 
-export async function toggleUserRole(userId: string) {
+export async function updateUserAccess(userId: string, newRole: string, permissions: string[]) {
   await checkAdmin()
   const user = await prisma.user.findUnique({ where: { id: userId } })
   if (!user) throw new Error("User not found")
   
-  const newRole = user.role === "ADMIN" ? "USER" : "ADMIN"
+  // Prevent removing the last OWNER
+  if (user.role === "OWNER" && newRole !== "OWNER") {
+    const ownerCount = await prisma.user.count({ where: { role: "OWNER" } })
+    if (ownerCount <= 1) {
+      throw new Error("Cannot demote the last OWNER")
+    }
+  }
+  
   await prisma.user.update({
     where: { id: userId },
-    data: { role: newRole }
+    data: { 
+      role: newRole as any,
+      permissions: (newRole === "ADMIN" || newRole === "GHOST") ? permissions : []
+    }
   })
   
   revalidatePath("/admin/users")
-  return { success: true, role: newRole }
+  return { success: true }
 }
 
 export async function revokeUserSessions(userId: string) {

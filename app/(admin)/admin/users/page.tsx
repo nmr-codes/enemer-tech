@@ -233,7 +233,7 @@ export default async function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <UserTableActions userId={user.id} />
+                      <UserTableActions user={user} />
                     </td>
                   </tr>
                 )

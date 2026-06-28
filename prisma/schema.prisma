@@ -22,6 +22,7 @@ model User {
   username      String?   @unique
   bio           String?   @db.Text
   role          Role      @default(USER)
+  permissions   String[]  @default([])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -225,8 +226,10 @@ model Setting {
 // ─── Enums ────────────────────────────────────────────────────
 
 enum Role {
-  USER
+  OWNER
   ADMIN
+  USER
+  GHOST
 }
 
 enum PostStatus {

@@ -1,34 +1,31 @@
 "use client"
 
 import { useState } from "react"
-import { toggleUserRole, revokeUserSessions, deleteUser } from "@/app/actions/user"
+import { revokeUserSessions, deleteUser } from "@/app/actions/user"
 import { ShieldCheck, LogOut, MoreHorizontal, Loader2 } from "lucide-react"
+import { ManageAccessModal } from "./ManageAccessModal"
 
 interface UserTableActionsProps {
-  userId: string
+  user: {
+    id: string
+    name: string | null
+    email: string
+    role: string
+    permissions: string[]
+  }
 }
 
-export function UserTableActions({ userId }: UserTableActionsProps) {
+export function UserTableActions({ user }: UserTableActionsProps) {
   const [isToggling, setIsToggling] = useState(false)
   const [isRevoking, setIsRevoking] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  const handleToggleRole = async () => {
-    try {
-      setIsToggling(true)
-      await toggleUserRole(userId)
-    } catch (err) {
-      alert("Failed to toggle role. You must be an ADMIN.")
-    } finally {
-      setIsToggling(false)
-    }
-  }
+  const [showModal, setShowModal] = useState(false)
 
   const handleRevoke = async () => {
     if (!confirm("Are you sure you want to log this user out of all active sessions?")) return
     try {
       setIsRevoking(true)
-      await revokeUserSessions(userId)
+      await revokeUserSessions(user.id)
     } catch (err) {
       alert("Failed to revoke sessions. You must be an ADMIN.")
     } finally {
@@ -40,7 +37,7 @@ export function UserTableActions({ userId }: UserTableActionsProps) {
     if (!confirm("WARNING: This will permanently delete this user and all associated authentication data. Continue?")) return
     try {
       setIsDeleting(true)
-      await deleteUser(userId)
+      await deleteUser(user.id)
     } catch (err) {
       alert("Failed to delete user. You must be an ADMIN.")
     } finally {
@@ -51,12 +48,11 @@ export function UserTableActions({ userId }: UserTableActionsProps) {
   return (
     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
       <button 
-        onClick={handleToggleRole}
-        disabled={isToggling}
-        className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-brand hover:bg-brand/10 transition-colors disabled:opacity-50" 
-        title="Manage Role"
+        onClick={() => setShowModal(true)}
+        className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-brand hover:bg-brand/10 transition-colors" 
+        title="Manage Access"
       >
-        {isToggling ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+        <ShieldCheck className="w-4 h-4" />
       </button>
       <button 
         onClick={handleRevoke}
@@ -74,6 +70,13 @@ export function UserTableActions({ userId }: UserTableActionsProps) {
       >
         {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <MoreHorizontal className="w-4 h-4" />}
       </button>
+
+      {showModal && (
+        <ManageAccessModal 
+          user={user} 
+          onClose={() => setShowModal(false)} 
+        />
+      )}
     </div>
   )
 }
