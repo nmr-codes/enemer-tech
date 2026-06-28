@@ -1,5 +1,7 @@
+import { useEffect, useRef } from "react"
+
 // ── 3D Cybernetic Coder Character Component ───────────────────
-function HeroOrb() {
+export function HeroOrb() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
 
