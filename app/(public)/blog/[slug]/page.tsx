@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, Eye } from "lucide-react"
 import { ViewCounter } from "@/components/public/ViewCounter"
-import { ShareButtons } from "@/components/public/ShareButtons"
-import { TableOfContents } from "@/components/public/TableOfContents"
-import { PostDefaultCover } from "@/components/shared/PostDefaultCover"
+import { BlogDetailsClient } from "@/components/public/BlogDetailsClient"
 import { generateSlug } from "@/lib/utils"
 
 interface BlogPostPageProps {
@@ -72,78 +68,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const tags = post.tags.map((pt) => pt.tag)
-  const contentWithIds = injectHeadingIds(post.content)
-  const contentUzWithIds = post.contentUz ? injectHeadingIds(post.contentUz) : ""
+  // Inject heading IDs on the server side
+  post.content = injectHeadingIds(post.content)
+  if (post.contentUz) {
+    post.contentUz = injectHeadingIds(post.contentUz)
+  }
+
+  // Fetch site settings for profile avatar and bio
+  const settingsList = await prisma.setting.findMany()
+  const settingsMap = settingsList.reduce((acc, curr) => {
+    acc[curr.key] = curr.value
+    return acc
+  }, {} as Record<string, string>)
 
   return (
-    <article className="space-y-8 max-w-4xl mx-auto relative">
+    <>
       <ViewCounter slug={post.slug} />
-
-      <div className="space-y-4 text-center">
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
-          <span className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" />
-            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ""}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" /> {post.readingTime || 3} min read
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Eye className="h-4 w-4" /> {post.views} views
-          </span>
-        </div>
-        
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-tight">
-          {post.title}
-        </h1>
-        {post.titleUz && (
-          <h2 className="text-xl sm:text-2xl font-semibold text-neutral-500 dark:text-neutral-400">
-            {post.titleUz}
-          </h2>
-        )}
-
-        <div className="flex flex-wrap justify-center gap-2 pt-2">
-          {tags.map((tag) => (
-            <Badge
-              key={tag.id}
-              variant="outline"
-              style={{ borderColor: tag.color || "#005fe8", color: tag.color || "#005fe8" }}
-              className="px-3 py-0.5 rounded-full text-xs font-semibold"
-            >
-              {tag.name}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 shadow-sm">
-        {post.coverImage ? (
-          <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
-        ) : (
-          <PostDefaultCover title={post.title} size="hero" />
-        )}
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-4 items-start">
-        <aside className="lg:col-span-1 lg:sticky lg:top-24 hidden lg:block border-r border-neutral-100 dark:border-neutral-900 pr-6 space-y-8">
-          <TableOfContents content={post.content} />
-          <div className="border-t border-neutral-100 dark:border-neutral-900 pt-6">
-            <ShareButtons title={post.title} slug={post.slug} />
-          </div>
-        </aside>
-
-        <div className="lg:col-span-3 prose dark:prose-invert max-w-none text-neutral-800 dark:text-neutral-200 leading-relaxed editor-content-area space-y-6">
-          <div dangerouslySetInnerHTML={{ __html: contentWithIds }} />
-          
-          {post.contentUz && (
-            <div className="mt-12 border-t-2 border-dashed border-neutral-200 dark:border-neutral-800 pt-12">
-              <h3 className="text-xl font-bold mb-6 text-neutral-500">O'zbek tilidagi matn:</h3>
-              <div dangerouslySetInnerHTML={{ __html: contentUzWithIds }} />
-            </div>
-          )}
-        </div>
-      </div>
-    </article>
+      <BlogDetailsClient post={post} settings={settingsMap} />
+    </>
   )
 }

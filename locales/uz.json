@@ -43,7 +43,8 @@
     "search": "Maqolalarni qidirish...",
     "noPosts": "Maqolalar topilmadi.",
     "readTime": "daqiqa o'qish",
-    "views": "ko'rishlar"
+    "views": "ko'rishlar",
+    "readArticle": "Maqolani o'qish"
   },
   "projects": {
     "title": "Loyiha Portfolio",

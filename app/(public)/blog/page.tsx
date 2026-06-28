@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { Search, Calendar, Clock, Eye, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, Calendar, Clock, Eye, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import { TiltCard } from "@/components/shared/TiltCard"
 import { PostDefaultCover } from "@/components/shared/PostDefaultCover"
 
@@ -209,20 +209,30 @@ export default function BlogListingPage() {
                     </p>
                   </div>
 
-                  {post.tags && post.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {post.tags.map((tag) => (
-                        <Badge
-                          key={tag.id}
-                          variant="outline"
-                          style={{ borderColor: tag.color || "#005fe8", color: tag.color || "#005fe8" }}
-                          className="text-[9px] py-0 px-2 font-normal rounded-full"
-                        >
-                          {locale === "uz" && tag.nameUz ? tag.nameUz : tag.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-neutral-900 mt-2">
+                    {post.tags && post.tags.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {post.tags.map((tag) => (
+                          <Badge
+                            key={tag.id}
+                            variant="outline"
+                            style={{ borderColor: tag.color || "#005fe8", color: tag.color || "#005fe8" }}
+                            className="text-[9px] py-0 px-2 font-normal rounded-full"
+                          >
+                            {locale === "uz" && tag.nameUz ? tag.nameUz : tag.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <div />
+                    )}
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="text-xs font-semibold text-brand hover:text-brand-hover flex items-center gap-1 transition-colors shrink-0"
+                    >
+                      {t("blog.readArticle")} <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
               </TiltCard>
             )

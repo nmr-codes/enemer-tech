@@ -306,10 +306,16 @@ export default function HomePage() {
                         {excerptText || "No description provided."}
                       </p>
                     </div>
-                    <div className="pt-2 text-right">
-                      <span className="text-[10px] text-neutral-400 font-semibold uppercase">
+                    <div className="pt-3 flex items-center justify-between border-t border-neutral-100 dark:border-neutral-900/60 mt-auto">
+                      <span className="text-[10px] text-neutral-450 dark:text-neutral-550 font-semibold uppercase">
                         {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ""}
                       </span>
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="text-xs font-semibold text-brand hover:text-brand-hover flex items-center gap-0.5 transition-colors"
+                      >
+                        {t("blog.readArticle")} <ArrowRight className="h-3 w-3 ml-0.5" />
+                      </Link>
                     </div>
                   </TiltCard>
                 </ScrollReveal>

@@ -43,7 +43,8 @@
     "search": "Search posts...",
     "noPosts": "No blog posts found.",
     "readTime": "min read",
-    "views": "views"
+    "views": "views",
+    "readArticle": "Read Article"
   },
   "projects": {
     "title": "Portfolio",
