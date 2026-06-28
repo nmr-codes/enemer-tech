@@ -94,7 +94,7 @@ export function Navbar() {
             
             {session ? (
               <Link
-                href="/admin"
+                href={(session.user as any)?.role === "ADMIN" ? "/admin" : "/profile"}
                 className="flex items-center gap-2 px-3 py-1.5 ml-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
               >
                 <div className="w-6 h-6 rounded-full overflow-hidden bg-brand/20 flex items-center justify-center">
@@ -104,7 +104,9 @@ export function Navbar() {
                     <span className="text-xs font-bold text-brand uppercase">{session.user?.name?.[0] || session.user?.email?.[0] || "U"}</span>
                   )}
                 </div>
-                <span className="text-sm font-medium">Dashboard</span>
+                <span className="text-sm font-medium">
+                  {(session.user as any)?.role === "ADMIN" ? "Dashboard" : "Profile"}
+                </span>
               </Link>
             ) : (
               <Link
@@ -157,11 +159,11 @@ export function Navbar() {
           </div>
           {session ? (
             <Link
-              href="/admin"
+              href={(session.user as any)?.role === "ADMIN" ? "/admin" : "/profile"}
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-brand hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
             >
-              Dashboard
+              {(session.user as any)?.role === "ADMIN" ? "Dashboard" : "Profile"}
             </Link>
           ) : (
             <Link
