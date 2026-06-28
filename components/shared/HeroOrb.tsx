@@ -300,7 +300,7 @@ export function HeroOrb() {
         const sx = pt.x * scale + width / 2
         const sy = pt.y * scale + height / 2 + breathY
 
-        projectedPoints.push({ x: sx, y: sy, z: pt.z, valid: scale > 0.1 })
+
 
         projectedParts.push({
           z: pt.z,
