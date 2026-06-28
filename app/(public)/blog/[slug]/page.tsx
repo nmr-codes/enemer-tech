@@ -2,7 +2,9 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { ViewCounter } from "@/components/public/ViewCounter"
 import { BlogDetailsClient } from "@/components/public/BlogDetailsClient"
+import { BlogComments } from "@/components/public/BlogComments"
 import { generateSlug } from "@/lib/utils"
+import { auth } from "@/lib/auth"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -58,6 +60,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             tag: true,
           },
         },
+        comments: {
+          include: {
+            user: {
+              select: { id: true, name: true, image: true }
+            }
+          },
+          orderBy: { createdAt: "desc" }
+        }
       },
     })
   } catch (err) {
@@ -81,10 +91,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     return acc
   }, {} as Record<string, string>)
 
+  const session = await auth()
+  const currentUserId = session?.user?.id
+  const isAdmin = (session?.user as any)?.role === "ADMIN"
+
   return (
-    <>
+    <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 lg:py-24 animate-[fadeIn_0.5s_ease-out]">
       <ViewCounter slug={post.slug} />
       <BlogDetailsClient post={post} settings={settingsMap} />
-    </>
+      
+      <BlogComments 
+        postId={post.id} 
+        comments={post.comments} 
+        currentUserId={currentUserId}
+        isAdmin={isAdmin}
+      />
+    </article>
   )
 }

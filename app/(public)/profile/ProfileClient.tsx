@@ -1,7 +1,8 @@
 "use client"
 
 import { signOut } from "next-auth/react"
-import { LogOut, Mail, User as UserIcon, CalendarDays, ShieldCheck } from "lucide-react"
+import Link from "next/link"
+import { LogOut, Mail, User as UserIcon, CalendarDays, ShieldCheck, Settings } from "lucide-react"
 
 interface ProfileClientProps {
   user: {
@@ -88,14 +89,23 @@ export function ProfileClient({ user }: ProfileClientProps) {
           </div>
         </div>
 
-        {/* Sign Out Button */}
-        <button
-          onClick={() => signOut({ callbackUrl: "/" })}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-[0_4px_14px_rgba(239,68,68,0.3)] hover:shadow-[0_6px_20px_rgba(239,68,68,0.4)]"
-        >
-          <LogOut className="w-5 h-5" />
-          Sign Out of Account
-        </button>
+        {/* Actions */}
+        <div className="w-full flex flex-col sm:flex-row gap-3">
+          <Link
+            href="/profile/settings"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white font-bold rounded-xl transition-all"
+          >
+            <Settings className="w-5 h-5" />
+            Edit Profile
+          </Link>
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-[0_4px_14px_rgba(239,68,68,0.3)] hover:shadow-[0_6px_20px_rgba(239,68,68,0.4)]"
+          >
+            <LogOut className="w-5 h-5" />
+            Sign Out
+          </button>
+        </div>
       </div>
     </div>
   )

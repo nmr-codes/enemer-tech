@@ -19,12 +19,15 @@ model User {
   password      String?   // Hashed password for credentials login
   emailVerified DateTime?
   image         String?
+  username      String?   @unique
+  bio           String?   @db.Text
   role          Role      @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
+  comments Comment[]
 
   @@map("users")
 }
@@ -90,6 +93,7 @@ model Post {
   updatedAt   DateTime    @updatedAt
 
   tags        PostTag[]
+  comments    Comment[]
 
   @@index([slug])
   @@index([status])
@@ -165,6 +169,28 @@ model Message {
 
   @@index([status])
   @@map("messages")
+}
+
+// ─── Blog Comments ────────────────────────────────────────────
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String    @db.Text
+  postId    String
+  userId    String
+  parentId  String?   // For nested replies
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+  @@map("comments")
 }
 
 // ─── Visitor Analytics ────────────────────────────────────────
