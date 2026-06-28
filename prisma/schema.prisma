@@ -19,7 +19,7 @@ model User {
   password      String?   // Hashed password for credentials login
   emailVerified DateTime?
   image         String?
-  role          Role      @default(ADMIN)
+  role          Role      @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -199,6 +199,7 @@ model Setting {
 // ─── Enums ────────────────────────────────────────────────────
 
 enum Role {
+  USER
   ADMIN
 }
 
