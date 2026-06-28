@@ -57,6 +57,18 @@
       "github": "Code",
       "live": "Live Demo"
     },
-    "noProjects": "No projects found."
+    "noProjects": "No projects found.",
+    "back": "Back to projects",
+    "info": "Project Info",
+    "repo": "Code Repository",
+    "prodUrl": "Production URL",
+    "visit": "Visit Website",
+    "viewGithub": "View on GitHub",
+    "private": "Proprietary / Private",
+    "noDemo": "No live demo available",
+    "overview": "Overview",
+    "screenshots": "Screenshots",
+    "caseStudy": "Case Study",
+    "present": "Present"
   }
 }

@@ -57,6 +57,18 @@
       "github": "Kod",
       "live": "Jonli demo"
     },
-    "noProjects": "Loyihalar topilmadi."
+    "noProjects": "Loyihalar topilmadi.",
+    "back": "Loyihalarga qaytish",
+    "info": "Loyiha ma'lumotlari",
+    "repo": "Kod ombori",
+    "prodUrl": "Ishchi havola",
+    "visit": "Saytga tashrif",
+    "viewGithub": "GitHub-da ko'rish",
+    "private": "Xususiy / Yopiq",
+    "noDemo": "Jonli demo mavjud emas",
+    "overview": "Umumiy ma'lumot",
+    "screenshots": "Skrinshotlar",
+    "caseStudy": "Loyiha tahlili",
+    "present": "Hozirgi vaqt"
   }
 }
