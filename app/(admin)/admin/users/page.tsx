@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { ShieldCheck, User as UserIcon, Mail, Activity, LogOut, Clock, CalendarDays, MoreHorizontal } from "lucide-react"
+import { UserAnalyticsCharts } from "@/components/admin/UserAnalyticsCharts"
 
 export const dynamic = "force-dynamic"
 
@@ -29,6 +30,50 @@ export default async function UsersPage() {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
     return diffDays <= 7;
   }).length
+
+  // Calculate Growth Data (Last 30 Days)
+  const growthDataMap = new Map<string, number>()
+  for(let i = 29; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    growthDataMap.set(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), 0)
+  }
+
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  let cumulativeUsers = users.filter(u => u.createdAt < thirtyDaysAgo).length
+
+  users.forEach(u => {
+    if (u.createdAt >= thirtyDaysAgo) {
+      const dStr = u.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      if (growthDataMap.has(dStr)) {
+        growthDataMap.set(dStr, growthDataMap.get(dStr)! + 1)
+      }
+    }
+  })
+
+  const growthData = Array.from(growthDataMap.entries()).map(([date, count]) => {
+    cumulativeUsers += count
+    return { date, users: cumulativeUsers }
+  })
+
+  // Calculate Auth Methods Data
+  const authCounts = { google: 0, github: 0, credentials: 0 }
+  users.forEach(u => {
+    if (u.accounts.length === 0) authCounts.credentials++
+    else {
+      u.accounts.forEach(acc => {
+        if (acc.provider === 'google') authCounts.google++
+        if (acc.provider === 'github') authCounts.github++
+      })
+    }
+  })
+
+  const authData = [
+    { name: 'Google', value: authCounts.google, color: '#ea4335' },
+    { name: 'GitHub', value: authCounts.github, color: '#333333' },
+    { name: 'Magic Link', value: authCounts.credentials, color: '#10b981' }
+  ].filter(d => d.value > 0)
 
   return (
     <div className="space-y-8 animate-[fadeIn_0.3s_ease-out]">
@@ -98,6 +143,9 @@ export default async function UsersPage() {
           </div>
         </div>
       </div>
+
+      {/* Analytics Charts */}
+      <UserAnalyticsCharts growthData={growthData} authData={authData} />
 
       {/* Advanced Users Table */}
       <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/[0.06] rounded-2xl overflow-hidden shadow-sm">
