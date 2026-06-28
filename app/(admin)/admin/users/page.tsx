@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma"
 import { ShieldCheck, User as UserIcon, Mail, Activity, LogOut, Clock, CalendarDays, MoreHorizontal } from "lucide-react"
 import { UserAnalyticsCharts } from "@/components/admin/UserAnalyticsCharts"
+import { UserHeaderActions } from "@/components/admin/UserHeaderActions"
+import { UserTableActions } from "@/components/admin/UserTableActions"
 
 export const dynamic = "force-dynamic"
 
@@ -84,14 +86,7 @@ export default async function UsersPage() {
             Monitor activity, manage roles, and track authentication analytics.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="px-4 py-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors shadow-sm">
-            Export CSV
-          </button>
-          <button className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand/90 transition-colors shadow-[0_4px_14px_rgba(0,95,232,0.3)]">
-            Invite User
-          </button>
-        </div>
+        <UserHeaderActions />
       </div>
 
       {/* Analytics KPIs */}
@@ -238,17 +233,7 @@ export default async function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-brand hover:bg-brand/10 transition-colors" title="Manage Role">
-                          <ShieldCheck className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Revoke Sessions">
-                          <LogOut className="w-4 h-4" />
-                        </button>
-                        <button className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors" title="More Options">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                      </div>
+                      <UserTableActions userId={user.id} />
                     </td>
                   </tr>
                 )
