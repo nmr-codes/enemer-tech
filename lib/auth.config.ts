@@ -2,16 +2,17 @@ import type { NextAuthConfig } from "next-auth"
 
 export const authConfig = {
   providers: [], // populated with Credentials in Node.js-compatible auth.ts
+  basePath: "/auth",
   trustHost: true, // required for Vercel / reverse-proxy deployments
   session: {
     strategy: "jwt" as const,
     maxAge: 8 * 60 * 60, // 8 hours
   },
   pages: {
-    signIn: "/admin/login",
+    signIn: "/auth/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.role = (user as any).role as "ADMIN"
         token.id = user.id

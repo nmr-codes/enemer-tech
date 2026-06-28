@@ -45,7 +45,7 @@ type FontSize = "sm" | "base" | "lg" | "xl"
 
 export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
   const { t, locale } = useLanguage()
-  
+
   // Read local storage settings for user preferences
   const [readLocale, setReadLocale] = useState<"en" | "uz">("en")
   const [fontSize, setFontSize] = useState<FontSize>("base")
@@ -145,10 +145,10 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
 
   const publishedDateText = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString(readLocale === "uz" ? "uz-UZ" : "en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
     : ""
 
   // Typography font size mappings
@@ -167,18 +167,18 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
   return (
     <div className="relative min-h-screen">
       {/* Scroll Progress Bar */}
-      <div 
+      <div
         className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-brand origin-left transition-transform duration-100"
         style={{ transform: `scaleX(${scrollProgress / 100})` }}
       />
 
       {/* Lightbox Modal */}
       {activeImage && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all duration-300 cursor-zoom-out"
           onClick={() => setActiveImage(null)}
         >
-          <button 
+          <button
             className="absolute top-4 right-4 p-2.5 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-white transition-colors"
             onClick={(e) => {
               e.stopPropagation()
@@ -187,10 +187,10 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
           >
             <X className="h-5 w-5" />
           </button>
-          
-          <img 
-            src={activeImage} 
-            alt="Expanded blog image view" 
+
+          <img
+            src={activeImage}
+            alt="Expanded blog image view"
             className="max-h-[85vh] max-w-full object-contain rounded-xl shadow-2xl animate-[scaleIn_0.2s_ease]"
             onClick={(e) => e.stopPropagation()}
           />
@@ -208,8 +208,8 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
       {/* Main Single Column Reading Area (Medium style) */}
       <article className="max-w-2xl mx-auto space-y-8 px-4 py-8">
         <div>
-          <Link 
-            href="/blog" 
+          <Link
+            href="/blog"
             className="text-sm font-semibold text-neutral-500 hover:text-brand flex items-center gap-1.5 w-max transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> {t("nav.blog")}
@@ -244,53 +244,6 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
 
             {/* Reading preferences toolbar */}
             <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto">
-              {/* Language Switcher Dropdown */}
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                  className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-850 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
-                  title="Switch Reading Language"
-                >
-                  <Languages className="h-3.5 w-3.5 text-neutral-500" />
-                  <span>{readLocale.toUpperCase()}</span>
-                  <ChevronDown className="h-3 w-3 text-neutral-400" />
-                </button>
-
-                {langDropdownOpen && (
-                  <div className="absolute right-0 mt-1.5 w-40 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-lg py-1.5 z-20 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <button
-                      onClick={() => {
-                        setReadLocale("en")
-                        setLangDropdownOpen(false)
-                      }}
-                      className={`w-full px-3 py-1.5 text-left text-xs font-semibold flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-850 transition-colors ${readLocale === "en" ? "text-brand" : "text-neutral-700 dark:text-neutral-300"}`}
-                    >
-                      <span>English (EN)</span>
-                      {readLocale === "en" && <span className="h-1.5 w-1.5 rounded-full bg-brand" />}
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        if (post.contentUz) {
-                          setReadLocale("uz")
-                        }
-                        setLangDropdownOpen(false)
-                      }}
-                      disabled={!post.contentUz}
-                      className={`w-full px-3 py-1.5 text-left text-xs font-semibold flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-850 transition-colors ${!post.contentUz ? "opacity-40 cursor-not-allowed" : readLocale === "uz" ? "text-brand" : "text-neutral-700 dark:text-neutral-300"}`}
-                      title={!post.contentUz ? "Uzbek translation not available" : ""}
-                    >
-                      <span>O'zbekcha (UZ)</span>
-                      {readLocale === "uz" ? (
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-                      ) : !post.contentUz ? (
-                        <span className="text-[9px] font-normal text-neutral-450 dark:text-neutral-500">N/A</span>
-                      ) : null}
-                    </button>
-                  </div>
-                )}
-              </div>
-
               {/* Font Size Selector */}
               <div className="flex items-center gap-1 bg-neutral-100/50 dark:bg-neutral-900/50 rounded-lg p-0.5 border border-neutral-200/50 dark:border-neutral-800/50">
                 <button
@@ -315,13 +268,60 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
                   <Type className="h-4 w-4" />
                 </button>
               </div>
+
+              {/* Language Switcher Dropdown */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                  className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-850 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                  title="Switch Reading Language"
+                >
+                  <Languages className="h-3.5 w-3.5 text-neutral-500" />
+                  <span>{readLocale.toUpperCase()}</span>
+                  <ChevronDown className="h-3 w-3 text-neutral-400" />
+                </button>
+
+                {langDropdownOpen && (
+                  <div className="absolute right-0 mt-1.5 w-40 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-lg py-1.5 z-20 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <button
+                      onClick={() => {
+                        setReadLocale("en")
+                        setLangDropdownOpen(false)
+                      }}
+                      className={`w-full px-3 py-1.5 text-left text-xs font-semibold flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-850 transition-colors ${readLocale === "en" ? "text-brand" : "text-neutral-700 dark:text-neutral-300"}`}
+                    >
+                      <span>English (EN)</span>
+                      {readLocale === "en" && <span className="h-1.5 w-1.5 rounded-full bg-brand" />}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (post.contentUz) {
+                          setReadLocale("uz")
+                        }
+                        setLangDropdownOpen(false)
+                      }}
+                      disabled={!post.contentUz}
+                      className={`w-full px-3 py-1.5 text-left text-xs font-semibold flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-850 transition-colors ${!post.contentUz ? "opacity-40 cursor-not-allowed" : readLocale === "uz" ? "text-brand" : "text-neutral-700 dark:text-neutral-300"}`}
+                      title={!post.contentUz ? "Uzbek translation not available" : ""}
+                    >
+                      <span>O'zbekcha (UZ)</span>
+                      {readLocale === "uz" ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                      ) : !post.contentUz ? (
+                        <span className="text-[9px] font-normal text-neutral-450 dark:text-neutral-500">N/A</span>
+                      ) : null}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Cover Image */}
         {post.coverImage && (
-          <div 
+          <div
             className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 shadow-sm relative group cursor-zoom-in"
             onClick={() => setActiveImage(post.coverImage)}
           >
@@ -367,29 +367,7 @@ export function BlogDetailsClient({ post, settings }: BlogDetailsClientProps) {
           <ShareButtons title={currentTitle} slug={post.slug} />
         </div>
 
-        {/* Author Bio Card Footer */}
-        <div className="mt-12 p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 flex flex-col sm:flex-row items-center sm:items-start gap-4">
-          <div className="h-16 w-16 rounded-full overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950 shrink-0">
-            <img src={authorAvatar} alt="Abdurasul Nematxonov" className="h-full w-full object-cover" />
-          </div>
-          <div className="space-y-2 text-center sm:text-left">
-            <h4 className="font-bold text-base text-neutral-900 dark:text-white">
-              {readLocale === "uz" ? "Muallif: Abdurasul Nematxonov" : "Written by Abdurasul Nematxonov"}
-            </h4>
-            {authorBio ? (
-              <div 
-                className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-md"
-                dangerouslySetInnerHTML={{ __html: authorBio }}
-              />
-            ) : (
-              <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-md">
-                {readLocale === "uz" 
-                  ? "Dasturiy ta'minot muhandisi va startap asoschisi. Veb-texnologiyalar, toza kod va tizim arxitekturasi bo'yicha yozadi."
-                  : "Software engineer and startup builder. Writing about web systems, clean code, and software architecture."}
-              </p>
-            )}
-          </div>
-        </div>
+
       </article>
     </div>
   )

@@ -7,9 +7,11 @@ import { useLanguage } from "@/context/LanguageContext"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher"
 import { Menu, X } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 export function Navbar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
   const { t } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -89,6 +91,29 @@ export function Navbar() {
             <div className="h-4 w-[1px] bg-neutral-200 dark:bg-neutral-800 mx-2" />
             <ThemeToggle />
             <LanguageSwitcher />
+            
+            {session ? (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 px-3 py-1.5 ml-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+              >
+                <div className="w-6 h-6 rounded-full overflow-hidden bg-brand/20 flex items-center justify-center">
+                  {session.user?.image ? (
+                    <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs font-bold text-brand uppercase">{session.user?.name?.[0] || session.user?.email?.[0] || "U"}</span>
+                  )}
+                </div>
+                <span className="text-sm font-medium">Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="ml-2 px-4 py-1.5 text-sm font-medium text-white bg-brand hover:bg-brand/90 rounded-lg transition-colors shadow-sm"
+              >
+                Log In
+              </Link>
+            )}
           </div>
 
           {/* Mobile controls */}
@@ -126,10 +151,27 @@ export function Navbar() {
             )
           })}
           <div className="h-[1px] bg-neutral-200 dark:bg-neutral-800 w-full my-2" />
-          <div className="flex items-center justify-between px-3">
+          <div className="flex items-center justify-between px-3 mb-2">
             <span className="text-sm font-medium text-neutral-500">Language</span>
             <LanguageSwitcher />
           </div>
+          {session ? (
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-brand hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/auth/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-brand hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+            >
+              Log In / Sign Up
+            </Link>
+          )}
         </div>
       )}
     </nav>

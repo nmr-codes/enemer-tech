@@ -38,6 +38,7 @@ const navGroups = [
     items: [
       { name: "Messages", href: "/admin/messages", icon: Mail },
       { name: "Visitors", href: "/admin/visitors", icon: Users },
+      { name: "Users", href: "/admin/users", icon: ShieldCheck },
     ],
   },
   {
