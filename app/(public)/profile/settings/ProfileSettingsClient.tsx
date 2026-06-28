@@ -15,9 +15,9 @@ interface ProfileSettingsClientProps {
 }
 
 const DEFAULT_AVATARS = [
-  { name: "Minimal Boy", url: "/avatars/avatar_boy.png" },
-  { name: "Minimal Girl", url: "/avatars/avatar_girl.png" },
-  { name: "Creative Abstract", url: "/avatars/avatar_creative.png" },
+  { name: "Minimal Boy", url: "/avatars/avatar_boy_1782658412370.png" },
+  { name: "Minimal Girl", url: "/avatars/avatar_girl_1782658444319.png" },
+  { name: "Creative Abstract", url: "/avatars/avatar_creative_1782658459414.png" },
 ]
 
 export function ProfileSettingsClient({ user }: ProfileSettingsClientProps) {
